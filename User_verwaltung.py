@@ -9,9 +9,12 @@ class Club_Accounts:
 
     def __init__(self, department : str, balance : Union[int, float]):
         Club_Accounts.num_accounts += 1
-        Club_Accounts.lst_accounts.append(department)
         self.department = department
         self.balance = round(balance, 2)
+        Club_Accounts.lst_accounts.append(self)
+
+    def __repr__(self):
+        return self.department
 
     def get_information(self):
 
@@ -72,24 +75,20 @@ class Referent_Finanzen(User):
 
 class Administrator(User):
 
-    def __init__(self):
+    def __init__(self,  name: str, password: str):
         super().__init__(name, password)
-
-    def backup(self):
-        bill = open('Rechnung.txt', 'w')
-        bill.write(f"Der Endpreis ist {table.price}€. Sie saßen am Tisch {table.table_number}."
-                   f"\n{table.get_order()}")
-
-    def create_Kassenwart(self,name):
-        pass
+        self.created_departments = {}
 
     def create_department(self, name, balance : Union[int, float]):
         name = name.lower()
 
         if name in Club_Accounts.lst_accounts:
-            print('Die Abteilung existiert schon')
+            print(f"Die Abteilung {name} existiert schon.")
         else:
-            pass
+            new_account = Club_Accounts(name, balance)
+            self.created_departments[name] = new_account
+            print(f"Die Abteilung {name} wurde mit einem Anfangsbestand von {balance}€ erstellt.")
+            return new_account
 
     def del_department(self, name):
         name = name.lower()
@@ -99,15 +98,20 @@ class Administrator(User):
         else:
             print(f"Die Abteilung {name} existiert nicht.")
 
+    def backup(self):
+        bill = open('Rechnung.txt', 'w')
+        bill.write(f"Der Endpreis ist {table.price}€. Sie saßen am Tisch {table.table_number}."
+                   f"\n{table.get_order()}")
+
+    def create_Kassenwart(self,name):
+        pass
+
 
 if __name__ == '__main__':
-    Schach = Club_Accounts('Schach', 100)
-    Handball = Club_Accounts('Handball', 25)
-    Fußball = Club_Accounts('Fußball', 500)
-    Schach.remove_money(34.576)
-    Handball.deposit_money(23.41)
-    Handball.get_information()
-    Schach.get_information()
-    Fußball.__del__()
+    admin = Administrator('Hans', 'p0815')
+    tanzen = admin.create_department('Tanzen', 26)
+    admin.create_department('FUßBALL', 126)
+    tanzen.deposit_money(76.555)
+    tanzen.get_information()
     print(Club_Accounts.lst_accounts)
     print(Club_Accounts.num_accounts)
