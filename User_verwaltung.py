@@ -15,14 +15,14 @@ class User:
             self._password = new_password
             print('Sie haben das Passwort erfolgreich geändert')
         else:
-            raise ValueError('Sie haben ein falsches Passwort eingegeben')
+            print('Sie haben ein falsches Passwort eingegeben')
 
 
 class Kassenwart(User):
 
     def __init__(self):
         super().__init__(name, password)
-        self.role = Kassenwart
+        self.role = 'Kassenwart'
 
 class Referent_Finanzen(User):
     pass
@@ -32,6 +32,7 @@ class Administrator(User):
 
     def __init__(self,  name: str, password: str):
         super().__init__(name, password)
+        self.role = 'admin'
         self.created_departments = {}
 
     def create_department(self, name, balance : Union[int, float]):

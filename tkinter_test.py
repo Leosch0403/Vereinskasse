@@ -1,12 +1,10 @@
 import tkinter as tk
-from tkinter import messagebox
-from urllib.parse import parse_qsl
 
 # Init main frame
-fenster = tk.Tk()
-fenster.title('Testfenster')
-fenster.geometry('500x500')
-fenster.configure(background='white', cursor='pirate')
+root = tk.Tk()
+root.title('Startbildschirm')
+root.geometry('500x500')
+root.configure(background='white')
 condition = 0
 
 def say_hello():
@@ -21,8 +19,11 @@ def change_label():
     else:
         condition = 0
 
+
+
+
 label1 = (tk.Label(
-    fenster,
+    root,
     text="Was passiert hier?",
     height=3,
     width=15,
@@ -33,21 +34,21 @@ label1 = (tk.Label(
 label1.pack()
 
 action_button = tk.Button(
-    fenster,
+    root,
     text='Aktion',
     command= change_label)
 
 action_button.pack()
 
 end_button = tk.Button(
-    fenster,
+    root,
     text='beenden',
-    command= fenster.destroy
+    command= root.destroy
 ).pack()
 
 # Init button 1
 hello_button = tk.Button(
-    fenster,
+    root,
     text='Say hi',
     command=say_hello)
 
@@ -61,7 +62,7 @@ hello_button.configure(
 
 
 # start mainloop
-fenster.mainloop()
+root.mainloop()
 
 '''
 activebackground: Hintergrundfarbe, wenn das Widget aktiv ist (z. B. wenn ein Button gedrückt wird).
