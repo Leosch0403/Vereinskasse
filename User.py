@@ -1,7 +1,6 @@
 __author__ = 'Leonard Schmid'
-import csv
-from typing import Union
 from Vereinskasse import Club_Accounts
+from typing import Union
 
 class User:
 
@@ -21,41 +20,59 @@ class User:
 class Kassenwart(User):
     role: str = 'kassenwart'
 
+    def __init__(self, name, password, account: Club_Accounts):
+        super().__init__(name, password)
+        self.account = account
+
     def deposit_money(self, amount: float, description: str):
-        """Deposit money to the balance."""
-        self.balance += amount
-        self.transactions.append({'type': 'deposit', 'amount': amount, 'description': description})
+        self.account.deposit_money(amount)
         print(f"Deposited money: {amount} - {description}")
 
     def remove_money(self, amount: float, description: str):
-        """Remove money from the balance."""
-        if amount > self.balance:
-            print("Insufficient funds to remove this amount.")
-            return
-        self.balance -= amount
-        self.transactions.append({'type': 'removal', 'amount': amount, 'description': description})
+        self.account.remove_money(amount)
         print(f"Removed money: {amount} - {description}")
-
-    def transfer_money(self, amount: float, description: str):
-        """Transfer money from the balance."""
-        if amount > self.balance:
-            print("Insufficient funds to transfer this amount.")
-            return
-        self.balance -= amount
-        self.transactions.append({'type': 'transfer', 'amount': amount, 'description': description})
-        print(f"Transferred money: {amount} - {description}")
 
 class Referent_in_Finanzen(User):
     role: str = 'referent'
 
+    def __init__(self, name, password, account: Club_Accounts):
+        super().__init__(name, password)
+        self.account = account
+
     def view_all_transactions(self):
-        """View all transactions."""
-        for transaction in self.transactions:
+        for transaction in self.account.transactions:
             print(f"{transaction['type'].capitalize()}: {transaction['amount']} - {transaction['description']}")
 
     def view_transaction_history(self):
-        """View the transaction history."""
         history = f"Transaction History:\n"
-        for transaction in self.transactions:
+        for transaction in self.account.transactions:
             history += f"{transaction['type'].capitalize()}: {transaction['amount']} - {transaction['description']}\n"
         return history
+
+class Administrator(User):
+    def __init__(self, name: str, password: str):
+        super().__init__(name, password)
+        self.role = 'admin'
+        self.created_departments = {}
+        self.lst_of_departments = []
+
+    def create_department(self, name, balance: Union[int, float]):
+        finder = False
+        name = name.lower()
+
+    def del_department(self, name):
+        for obj in self.lst_of_departments:
+            if obj._department == name:
+                self.lst_of_departments.remove(obj)
+                self.lst_of_departments.remove(obj)
+
+    def backup(self, table):
+        bill = open('Rechnung.txt', 'w')
+        bill.write(f"Der Endpreis ist {table.price}€. Sie saßen am Tisch {table.table_number}."
+                   f"\n{table.get_order()}")
+
+    def create_User(self, name):
+        pass
+
+    def del_user(self, name):
+        pass
