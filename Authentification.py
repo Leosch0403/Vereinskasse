@@ -1,5 +1,5 @@
 import tkinter as tk
-from User_verwaltung import *
+from User import *
 from tkinter import messagebox
 import sys
 import subprocess
@@ -10,11 +10,12 @@ root.title('Startbildschirm')
 root.geometry('400x300')
 root.configure(background='white')
 
+#Testfaelle
 admin_name = ['Hannes', 'Anna']
 admin_password = ['p_0815', 'anna_03']
 
-admin_lst = []
 # Erstellen eines neuen Auto-Objekts und Hinzufügen zur Liste
+admin_lst = []
 for name, password in zip(admin_name, admin_password):
     neuer_admin = Administrator(name, password)
     admin_lst.append(neuer_admin)
@@ -36,7 +37,7 @@ def login():
                                 f"Willkommen {obj._name}, du bist {obj.role}.")
 
             # Open new and end current Program
-            subprocess.Popen([sys.executable, 'tkinter_test.py'])
+            subprocess.Popen([sys.executable, 'Administrator.py'])
             sys.exit()
 
     # Messages via messagebox if the login was unsuccessful because of a false username or password
@@ -83,7 +84,7 @@ password_entry.pack()
 # Button for authorization
 start_button = tk.Button(root,
                          font= 'Arial',
-                         text= 'Eingabe bestätigen',
+                         text= 'Eingabe bestaetigen',
                          command= login)
 start_button.pack(pady= 10)
 
