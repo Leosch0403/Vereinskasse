@@ -17,7 +17,7 @@ for name, password in zip(admin_name, admin_password):
     neuer_admin = Administrator(name, password)
     admin_lst.append(neuer_admin)
 
-def authentificator():
+def login():
     input_name = name_entry.get()
     input_password = password_entry.get()
 
@@ -66,7 +66,7 @@ password_entry.pack()
 start_button = tk.Button(root,
                          font= 'Arial',
                          text= 'Eingabe bestätigen',
-                         command= authentificator)
+                         command= login)
 start_button.pack(pady= 10)
 
 root.mainloop()
