@@ -9,23 +9,20 @@ class Club_Accounts:
 
     def __init__(self, department : str, balance : Union[int, float]):
         Club_Accounts.num_accounts += 1
-        self.department = department
+        self._department = department
         self.balance = round(balance, 2)
         Club_Accounts.lst_accounts.append(self)
 
-    def __repr__(self):
-        return self.department
-
     def get_information(self):
 
-        print(f"Der Kontostand der Abteilung {self.department} ist {self.balance}€")
+        return f"Der Kontostand der Abteilung {self._department} ist {self.balance}€"
 
     def deposit_money(self, amount : Union[int, float]):
         amount = round(amount, 2)
         if amount <= 0:
             raise ValueError("Der Betrag muss positiv sein.")
         self.balance += amount
-        print(f"{amount}€ wurde in das Konto der {self.department} Abteilung eingezahlt. "
+        print(f"{amount}€ wurde in das Konto der {self._department} Abteilung eingezahlt. "
               f"Neuer Kontostand: {self.balance}€")
 
 
@@ -44,5 +41,5 @@ class Club_Accounts:
         Deletes a created object and reduces the total number of objects
         """
         Club_Accounts.num_accounts -= 1
-        if self.department in Club_Accounts.lst_accounts:
-            Club_Accounts.lst_accounts.remove(self.department)
+        if self._department in Club_Accounts.lst_accounts:
+            Club_Accounts.lst_accounts.remove(self._department)
