@@ -1,6 +1,8 @@
 import tkinter as tk
 from User_verwaltung import *
 from tkinter import messagebox
+import sys
+import subprocess
 
 # Init main frame
 root = tk.Tk()
@@ -30,15 +32,31 @@ def login():
             password_count = True
 
         if input_password == obj._password and input_name == obj._name:
-            messagebox.showinfo('Authentifizierung erfolgreich', f"Willkommen {obj._name}, du bist {obj.role}")
+            messagebox.showinfo('Authentifizierung erfolgreich',
+                                f"Willkommen {obj._name}, du bist {obj.role}.")
 
+            # Open new and end current Program
+            subprocess.Popen([sys.executable, 'tkinter_test.py'])
+            sys.exit()
+
+    # Messages via messagebox if the login was unsuccessful because of a false username or password
     if not name_count and not password_count:
-        print(f"Der eingegebene Benutzername {input_name} "
-              f"und Passwort {input_password} existieren nicht")
+        messagebox.showinfo('falscher Name und Passwort',
+                            f"Der eingegebene Benutzername {input_name} "
+                            f"und Passwort {input_password} existieren nicht")
+
+    elif name_count and password_count:
+        messagebox.showinfo('falsches Passwort',
+                            f"Das eingegebene Passwort {input_password} "
+                            f"für den Benutzernamen {input_name} ist falsch.")
+
     elif not name_count:
-        print(f"Der eingegebene Benutzername {input_name} existiert nicht")
+        messagebox.showinfo('falscher Name',
+                            f"Der eingegebene Benutzername {input_name} existiert nicht")
+
     elif not password_count:
-        print(f"Das eingegebene Passwort {input_password} ist falsch")
+        messagebox.showinfo('falsches Passwort',
+                            f"Das eingegebene Passwort {input_password} ist falsch")
 
 # Entry field for name
 name_label = tk.Label(root,
