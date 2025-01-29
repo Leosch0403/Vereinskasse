@@ -193,5 +193,6 @@ if __name__ == '__main__':
     print('')
     admin.del_user('dennis_05')
     admin.del_user('MiKa')
+    lst_of_Accounts[1].change_password('#dead', 'neues Passwort')
     admin.get_users()
 
