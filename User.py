@@ -24,9 +24,10 @@ class User:
 
 class Kassenwart(User):
 
-    def __init__(self):
+    def __init__(self, name, password, department):
         super().__init__(name, password)
         self._role = 'kassenwart'
+        self._department = department
 
 class Referent_Finanzen(User):
     pass
@@ -37,7 +38,6 @@ class Administrator(User):
     def __init__(self,  name: str, password: str):
         super().__init__(name, password)
         self._role = 'admin'
-        self.created_departments = {}
 
     def create_department(self, name, balance : int | float):
 
@@ -72,6 +72,12 @@ class Administrator(User):
             if obj._department == name:
                 lst_of_departments.remove(obj)
 
+    def create_User(self,name):
+        pass
+
+    def del_user(self, name):
+        pass
+
     def backup(self):
         # Backup of department structure + balance
         d_csv = open('department_csv.csv', 'w')
@@ -85,11 +91,6 @@ class Administrator(User):
         for user in lst_of_Accounts:
             u_csv.write(f"{user._name};{user._role}\n")
 
-    def create_User(self,name):
-        pass
-
-    def del_user(self, name):
-        pass
 
 if __name__ == '__main__':
     print(lst_of_departments)
