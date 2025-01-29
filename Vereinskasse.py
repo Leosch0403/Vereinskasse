@@ -39,5 +39,3 @@ class Club_Accounts:
         Deletes a created object and reduces the total number of objects
         """
         Club_Accounts.num_accounts -= 1
-        if self._department in Club_Accounts.lst_accounts:
-            Club_Accounts.lst_accounts.remove(self._department)

@@ -69,7 +69,7 @@ for user in lst_of_Accounts:
     accounts_obj = tk.Label(info_frame,
                         font="Arial 20 bold",
                         background='light grey',
-                        text=f"{user._name}",
+                        text=f"{user._username}",
                         width=l_width,
                         height=l_height)
 
