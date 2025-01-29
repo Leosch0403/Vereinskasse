@@ -12,8 +12,9 @@ root.geometry("800x400")
 # Create Testobjects
 admin = Administrator('Hans', 'p0815')
 lst_of_Accounts.append(admin)
+print(admin._role)
 admin.create_department('Tanzen', 26)
-admin.create_department('FUßBALL', 126)
+admin.create_department('FUßBALL', 166)
 
 # Create left frame that displays the created users and departments
 info_frame = tk.Frame(root,
@@ -74,7 +75,7 @@ for user in lst_of_Accounts:
     count_2 += 1
 
 
-
+admin.backup()
 root.mainloop()
 
 #print(lst_of_Accounts,lst_of_departments)

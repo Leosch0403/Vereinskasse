@@ -17,16 +17,16 @@ class User:
 
         if old_password == self._password:
             self._password = new_password
-            print('Sie haben das Passwort erfolgreich geändert')
+            return 'Sie haben das Passwort erfolgreich geändert'
         else:
-            print('Sie haben ein falsches Passwort eingegeben')
+            return 'Sie haben ein falsches Passwort eingegeben'
 
 
 class Kassenwart(User):
 
     def __init__(self):
         super().__init__(name, password)
-        self.role = 'kassenwart'
+        self._role = 'kassenwart'
 
 class Referent_Finanzen(User):
     pass
@@ -36,7 +36,7 @@ class Administrator(User):
 
     def __init__(self,  name: str, password: str):
         super().__init__(name, password)
-        self.role = 'admin'
+        self._role = 'admin'
         self.created_departments = {}
 
     def create_department(self, name, balance : int | float):
@@ -73,9 +73,17 @@ class Administrator(User):
                 lst_of_departments.remove(obj)
 
     def backup(self):
-        d_csv =
+        # Backup of department structure + balance
+        d_csv = open('department_csv.csv', 'w')
+        d_csv.write(f"department;balance\n")
+        for dep in lst_of_departments:
+            d_csv.write(f"{dep._department};{dep.balance}\n")
+
+        # Backup of usernames and passwords
         u_csv = open('users_csv.csv', 'w')
-        u_csv.write(f"username;role")
+        u_csv.write(f"username;role\n")
+        for user in lst_of_Accounts:
+            u_csv.write(f"{user._name};{user._role}\n")
 
     def create_User(self,name):
         pass
@@ -95,3 +103,4 @@ if __name__ == '__main__':
     admin.del_department('Tanzen')
     print(lst_of_departments)
     print(lst_of_departments[0].get_information())
+    print(admin.role)
