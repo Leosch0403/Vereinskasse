@@ -1,72 +1,80 @@
 __author__ = 'Leonard Schmid'
 
-from User import User
-from Vereinskasse import Club_Accounts
+from User import *
 import tkinter as tk
 
-lst_of_Accounts =[]
-lst_of_departments = []
+#init main frame
+root = tk.Tk()
+root.title('Administrator')
+root.configure(background='white')
+root.geometry("800x400")
 
-class Administrator(User):
+# Create Testobjects
+admin = Administrator('Hans', 'p0815')
+lst_of_Accounts.append(admin)
+admin.create_department('Tanzen', 26)
+admin.create_department('FUßBALL', 126)
 
-    def __init__(self,  name: str, password: str):
-        super().__init__(name, password)
-        self.role = 'admin'
-        self.created_departments = {}
+# Create left frame that displays the created users and departments
+info_frame = tk.Frame(root,
+                      background='#bcbfd7',
+                      width=400
+                      )
+info_frame.pack(side='left',
+                fill='y')
 
-    def create_department(self, name, balance : int | float):
+# Set the label size
+l_width = 13
+l_height = 1
 
-        # boolean indicates, whether object already exists
-        finder = False
-        name = name.lower()
+# Set the labels for the departments
+accounts = tk.Label(info_frame,
+                    font="Arial 20 bold",
+                    background='lightgrey',
+                    text=f"Abteilung",
+                    width=l_width,
+                    height=l_height
+                    )
+accounts.grid(row=0,column=0, padx=20, pady=20)
+count = 1
+for obj in lst_of_departments:
 
-        # Check the value and type of input balance
-        if not isinstance(balance, (int, float)) or balance < 0:
-            print("Der Anfangsbestand muss eine positive Zahl sein.")
-            return
+    accounts_obj = tk.Label(info_frame,
+                        font="Arial 20 bold",
+                        background='light grey',
+                        text=f"{obj._department}",
+                        width=l_width,
+                        height=l_height)
 
-        # Check whether object already exists
-        if len(lst_of_departments) == 0:
-            pass
-        else:
-            for dpt in lst_of_departments:
-                if name in dpt._department:
-                    print(f"Die Abteilung {name} existiert schon.")
-                    finder = True
+    accounts_obj.grid(row=count, column=0)
+    count += 1
 
-        # If object doesn't exist create it and add to list
-        if not finder:
-            new_account = Club_Accounts(name, balance)
-            lst_of_departments.append(new_account)
-            print(f"Die Abteilung {name} wurde mit einem Anfangsbestand von {balance}€ erstellt.")
+# Set the labels for the users with the role kassenwart
+user = tk.Label(info_frame,
+                font="Arial 20 bold",
+                background='light grey',
+                text=f"Kassenwart",
+                width=l_width,
+                height=l_height
+                )
 
-    def del_department(self, name):
-        name = name.lower()
+user.grid(row=0,column=1, padx=20, pady=20)
 
-        for obj in lst_of_departments:
-            if obj._department == name:
-                lst_of_departments.remove(obj)
+count_2 = 1
+for user in lst_of_Accounts:
 
-    def backup(self):
-        bill = open('Rechnung.txt', 'w')
-        bill.write(f"Der Endpreis ist {table.price}€. Sie saßen am Tisch {table.table_number}."
-                   f"\n{table.get_order()}")
+    accounts_obj = tk.Label(info_frame,
+                        font="Arial 20 bold",
+                        background='light grey',
+                        text=f"{user._name}",
+                        width=l_width,
+                        height=l_height)
 
-    def create_User(self,name):
-        pass
+    accounts_obj.grid(row=count_2, column=1)
+    count_2 += 1
 
-    def del_user(self, name):
-        pass
 
-if __name__ == '__main__':
-    print(lst_of_departments)
-    admin = Administrator('Hans', 'p0815')
-    admin.create_department('Tanzen', 26)
-    admin.create_department('FUßBALL', 126)
-    print(lst_of_departments)
-    tanzen = lst_of_departments[0]
-    print(lst_of_departments[0].get_information())
-    tanzen.deposit_money(76.558)
-    admin.del_department('Tanzen')
-    print(lst_of_departments)
-    print(lst_of_departments[0].get_information())
+
+root.mainloop()
+
+#print(lst_of_Accounts,lst_of_departments)
