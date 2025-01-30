@@ -23,6 +23,8 @@ class Club_Accounts:
         print(f"{amount}€ wurde in das Konto der {self._department} Abteilung eingezahlt. "
               f"Neuer Kontostand: {self.balance}€")
 
+        # Es fehlt dass der Betrag self.transactions hinzugefügt wird
+
 
     def remove_money(self, amount : int | float):
         amount = round(amount, 2)

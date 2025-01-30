@@ -42,6 +42,12 @@ class Referent_Finanzen(User):
         super().__init__(username, password)
         self._role = 'referent_finanzen'
 
+    def view_trans_history(self, name):
+        # Alle Sachen in lst_of_dep durchgehen und dann den richtigen suchen
+        # Muss einfach nur self.transactions von dem Objekt aufrufen
+        pass
+
+
 
 class Administrator(User):
 

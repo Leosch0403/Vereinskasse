@@ -54,7 +54,7 @@ def entry_field(information):
     root_2.configure(background='white')
 
     entries = []
-    for i in range(1, len(information) + 1):
+    for i in range(len(information)):
         # Label for the input field
         fst_label = tk.Label(root_2, font='Arial', text=f"{information[i]}", background='white')
         fst_label.pack(pady=10)
