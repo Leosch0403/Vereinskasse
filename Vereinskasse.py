@@ -1,23 +1,21 @@
 __author__ = 'Leonard Schmid'
 
-from typing import Union
 
 class Club_Accounts:
 
     num_accounts = 0
-    lst_accounts = []
 
-    def __init__(self, department : str, balance : Union[int, float]):
+    def __init__(self, department : str, balance : int | float):
         Club_Accounts.num_accounts += 1
         self._department = department
         self.balance = round(balance, 2)
-        Club_Accounts.lst_accounts.append(self)
+        self.transactions = []
 
     def get_information(self):
 
         return f"Der Kontostand der Abteilung {self._department} ist {self.balance}€"
 
-    def deposit_money(self, amount : Union[int, float]):
+    def deposit_money(self, amount : int | float):
         amount = round(amount, 2)
         if amount <= 0:
             raise ValueError("Der Betrag muss positiv sein.")
@@ -25,8 +23,10 @@ class Club_Accounts:
         print(f"{amount}€ wurde in das Konto der {self._department} Abteilung eingezahlt. "
               f"Neuer Kontostand: {self.balance}€")
 
+        # Es fehlt dass der Betrag self.transactions hinzugefügt wird
 
-    def remove_money(self, amount : Union[int, float]):
+
+    def remove_money(self, amount : int | float):
         amount = round(amount, 2)
         if amount <= 0:
             raise ValueError("Der Betrag muss positiv sein.")
@@ -41,5 +41,3 @@ class Club_Accounts:
         Deletes a created object and reduces the total number of objects
         """
         Club_Accounts.num_accounts -= 1
-        if self._department in Club_Accounts.lst_accounts:
-            Club_Accounts.lst_accounts.remove(self._department)
