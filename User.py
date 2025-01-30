@@ -57,8 +57,7 @@ class Administrator(User):
 
         # Check the value and type of input balance
         if not isinstance(balance, (int, float)) or balance < 0:
-            print("Der Anfangsbestand muss eine positive Zahl sein.")
-            return
+            return print("Der Anfangsbestand muss eine positive Zahl sein.")
 
         # Check whether object already exists
         if len(lst_of_departments) == 0:
@@ -73,6 +72,7 @@ class Administrator(User):
         if not finder:
             new_account = Club_Accounts(name, balance)
             lst_of_departments.append(new_account)
+            return print('Objekt erstellt')
 
     def del_department(self, name):
         name = name.lower()

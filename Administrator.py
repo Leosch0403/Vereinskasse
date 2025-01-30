@@ -38,8 +38,7 @@ def backup_csv():
 def chng_pswd():
 
 
-    # Init entry field
-    entry_field('Altes Passwort', 'Neues Passwort', change_)
+
 
 def lst_dep():
     # Init frame
@@ -90,8 +89,13 @@ def lst_usr():
         count += 1
 
 def create_dep():
-    # Init entry field
-    entry_field('Altes Passwort', 'Neues Passwort', admin.create_department())
+    # Init entry field and read the input information
+    cache('Abteilung:', 'Kontostand:')
+    run_entry_field()
+    info1, info2 = read_cache()
+    admin.create_department(info1, float(info2))
+    messagebox.showinfo('Erstellung erfolgreich',
+                        f"Du hast erfolgreich die Abteilung {info1} erstellt.")
 
 def create_usr():
 

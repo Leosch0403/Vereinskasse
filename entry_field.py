@@ -1,4 +1,6 @@
 import tkinter as tk
+import subprocess
+import sys
 
 def read_cache():
     """
@@ -11,9 +13,9 @@ def read_cache():
     with open('Zwischenspeicher.txt', 'r') as file:
         for line in file:
             lines.append(line.strip())
-    return lines[0], lines[1]
+    return lines
 
-def cache(info_1, info_2):
+def cache(infomations):
     """
     Writes the provided 2 information into 'Zwischenspeicher.txt' in 2 seperate lines,
     replacing its current content.
@@ -23,23 +25,23 @@ def cache(info_1, info_2):
         info_2 (str): The second piece of information to write.
     """
     with open('Zwischenspeicher.txt', 'w') as new_file:
-        new_file.write(info_1)
-        new_file.write("\n")
-        new_file.writelines(info_2)
+        for line in infomations:
+            new_file.write(line + "\n")
 
-def end_entry_field(info_1, info_2, root):
+def end_entry_field(information, root):
     """
-    Saves the input data and closes the input window.
+    Saves the input data (second to last object in list) via the cache function in a txt file,
+    sends the user to the next program (first object in list)
+    and closes the input window at the end.
 
-    Args:
-        info_1 (str): The first input data to save.
-        info_2 (str): The second input data to save.
-        root_2 (tk.Tk): The tkinter root window to be closed.
+        :param information: the list of information
+        :param root: The tkinter root window to be closed.
     """
-    cache(info_1, info_2)
+    cache(information[1:])
+    subprocess.Popen([sys.executable, information[0]])
     root.destroy()
 
-def entry_field(fst_line, snd_line):
+def entry_field(information):
     """
     Creates a window with two input fields and a submit button.
 
@@ -51,25 +53,28 @@ def entry_field(fst_line, snd_line):
     root_2.title('Input Field')
     root_2.configure(background='white')
 
-    # Label for the first input field
-    fst_label = tk.Label(root_2, font='Arial', text=fst_line, background='white')
-    fst_label.pack(pady=10)
+    entries = []
+    for i in range(1, len(information) + 1):
+        # Label for the input field
+        fst_label = tk.Label(root_2, font='Arial', text=f"{information[i]}", background='white')
+        fst_label.pack(pady=10)
 
-    # First input field
-    fst_entry = tk.Entry(root_2)
-    fst_entry.pack()
+        # input field
+        fst_entry = tk.Entry(root_2)
+        fst_entry.pack()
+        entries.append(fst_entry)
 
-    # Label for the second input field
-    snd_label = tk.Label(root_2, font='Arial', text=snd_line, background='white')
-    snd_label.pack(pady=10)
-
-    # Second input field
-    snd_entry = tk.Entry(root_2)
-    snd_entry.pack()
+    def on_submit():
+        """
+        Gathers the input data from the entry fields, prints it, and passes it to the end_entry_field function.
+        """
+        informations = [entry.get() for entry in entries]
+        informations.insert(0, information[0])
+        print(informations)
+        end_entry_field(informations, root_2)
 
     # Submit button to confirm the input
-    start_button = tk.Button(root_2, font='Arial', text='Eingabe bestaetigen',
-                             command=lambda: end_entry_field(fst_entry.get(), snd_entry.get(), root_2))
+    start_button = tk.Button(root_2, font='Arial', text='Eingabe bestaetigen', command=on_submit)
     start_button.pack(pady=10)
 
     root_2.mainloop()
@@ -79,8 +84,8 @@ def run_entry_field():
     Reads the cache data and opens the input window.
     This function is executed when the script is run directly.
     """
-    fst_line, snd_line = read_cache()  # Read the cache data
-    entry_field(fst_line, snd_line)  # Open the input window
+    infos = read_cache()  # Read the cache data
+    entry_field(infos)  # Open the input window
 
 
 if __name__ == '__main__':
