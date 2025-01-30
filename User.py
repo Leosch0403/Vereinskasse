@@ -17,9 +17,9 @@ class User:
 
         if old_password == self._password:
             self._password = new_password
-            return 'Sie haben das Passwort erfolgreich geändert'
+            return True
         else:
-            return 'Sie haben ein falsches Passwort eingegeben'
+            return False
 
     def info(self):
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
@@ -95,15 +95,15 @@ class Administrator(User):
         for user in lst_of_Accounts:
             if name in user._username:
                 finder_u = True
-                return print(f"Der User {name} existiert schon.")
+                return f"Der User {name} existiert schon."
 
         # Check whether department doesn't exist
         for dpt in lst_of_departments:
             if department == dpt._department:
                 finder_d = True
         if not finder_d:
-            return print(f"Die Abteilung {department} existiert noch nicht. "
-                      f"Daher kann der Kassenwart nicht zugeordnet werden")
+            return (f"Die Abteilung {department} existiert noch nicht. "
+                    f"Daher kann der Kassenwart nicht zugeordnet werden")
 
         # Create User
         if not finder_u:
@@ -122,7 +122,7 @@ class Administrator(User):
         for user in lst_of_Accounts:
             if name in user._username:
                 finder_u = True
-                return print(f"Der User {name} existiert schon.")
+                return f"Der User {name} existiert schon."
 
         # Create User
         if not finder_u:
@@ -155,7 +155,7 @@ class Administrator(User):
             del lst_of_Accounts[num]
 
         if not finder_u:
-            return print(f"Der User {name} existiert nicht und kann daher nicht gelöscht werden.")
+            return f"Der User {name} existiert nicht und kann daher nicht gelöscht werden."
 
     def backup(self):
         # Backup of department structure + balance
@@ -195,4 +195,4 @@ if __name__ == '__main__':
     admin.del_user('MiKa')
     lst_of_Accounts[1].change_password('#dead', 'neues Passwort')
     admin.get_users()
-
+    admin.backup()
