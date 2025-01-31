@@ -1,0 +1,51 @@
+import tkinter as tk
+import subprocess
+import sys
+from tkinter import messagebox
+from csv_reader import read_user_csv, read_dep_csv, read_all_csv, start_tk_module
+from User import Referent_in_Finanzen
+from Vereinskasse import Club_Accounts
+from User import view_all_transactions, view_transaction_history
+
+# Import data from CSV files and set the current user
+current_user = start_tk_module()
+
+# Example account for the referent
+account = Club_Accounts("Finanzen", 1000.0)
+
+# Example user for the referent
+referent = Referent_in_Finanzen("Referent", "password", account)
+
+# Initialize the main window
+root = tk.Tk()
+root.title('Referent Finanzen')
+root.configure(background='white')
+root.geometry("800x400")
+
+def show_all_transactions():
+    """
+    Displays all transactions of the referent.
+    """
+    transactions = view_all_transactions(referent)
+    messagebox.showinfo('All Transactions', transactions)
+
+def show_transaction_history():
+    """
+    Displays the transaction history of the referent.
+    """
+    history = view_transaction_history(referent)
+    messagebox.showinfo('Transaction History', history)
+
+# Button to view all transactions
+view_all_transactions_button = tk.Button(root, font='Arial', text='View All Transactions', command=show_all_transactions)
+view_all_transactions_button.pack(pady=10)
+
+# Button to view transaction history
+view_transaction_history_button = tk.Button(root, font='Arial', text='View Transaction History', command=show_transaction_history)
+view_transaction_history_button.pack(pady=10)
+
+# Button to logout
+logout_button = tk.Button(root, font='Arial', text='Logout', command=lambda: subprocess.Popen([sys.executable, 'Authentification.py']) or sys.exit())
+logout_button.pack(pady=10)
+
+root.mainloop()
