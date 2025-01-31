@@ -1,6 +1,7 @@
-username;role
-Hans;admin
-mika;referent_finanzen
-jochen;admin
-dennis_05;user
-mina;kassenwart
+username;password;role;department
+hans;p0815;admin
+mika;hallo;referent_finanzen
+jochen;Blume;admin
+dennis_05;jaaahr;user
+amman;ammo;user
+Denny;p_08152;kassenwart;golf
