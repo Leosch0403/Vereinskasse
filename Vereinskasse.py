@@ -13,6 +13,7 @@ class Clb_dep_acc:
         self.balance = round(balance, 2)
         self.transactions = ast.literal_eval(trans_history)
 
+
     def get_information(self):
         return (f"Der Kontostand der Abteilung {self._dep_name} ist {self.balance}€, "
                 f"die Transaktionshistorie ist {self.transactions}.")
