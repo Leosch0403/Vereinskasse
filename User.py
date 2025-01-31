@@ -29,11 +29,23 @@ class Kassenwart(User):
     def __init__(self, username, password, department):
         super().__init__(username, password)
         self._role = 'kassenwart'
-        self._department = department
+        self._department = department.lower()
 
     def get_info(self):
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
+
+    def deposit(self, amount):
+        amount = float(amount)
+        for dep in Clb_dep_acc.lst_of_dep:
+            if self._department == dep._dep_name:
+                return dep.deposit_money(amount)
+
+    def remove(self, amount):
+        amount = float(amount)
+        for dep in Clb_dep_acc.lst_of_dep:
+            if self._department == dep._dep_name:
+                return dep.remove_money(amount)
 
 class Referent_Finanzen(User):
 

@@ -1,4 +1,5 @@
 __author__ = 'Leonard Schmid'
+import ast
 
 class Clb_dep_acc:
 
@@ -10,29 +11,42 @@ class Clb_dep_acc:
         Clb_dep_acc.lst_of_dep.append(self)
         self._dep_name = department.lower()
         self.balance = round(balance, 2)
-        self.transactions = trans_history
+        self.transactions = ast.literal_eval(trans_history)
 
     def get_information(self):
         return (f"Der Kontostand der Abteilung {self._dep_name} ist {self.balance}€, "
                 f"die Transaktionshistorie ist {self.transactions}.")
 
     def deposit_money(self, amount : int | float):
+        # Check whether input data is convertable to float
+        try:
+            amount = float(amount)
+        except ValueError:
+            return f"Der Input war keine Zahl"
+
         amount = round(amount, 2)
         if amount < 0:
             return f"Der Betrag muss positiv sein."
         self.balance += amount
         self.transactions.append(amount)
-        return (f"{amount}€ wurde in das Konto der {self._department} Abteilung eingezahlt. "
+        return (f"{amount}€ wurde in das Konto der {self._dep_name} Abteilung eingezahlt. "
                 f"Neuer Kontostand: {self.balance}€")
 
     def remove_money(self, amount : int | float):
-        amount = round(amount, 2) * -1
+        # Check whether input data is convertable to float
+        try:
+            amount = float(amount)
+        except ValueError:
+            return f"Der Input war keine Zahl"
+
+        amount = round(amount, 2)
         if amount < 0:
             return "Die eingegebene Zahl muss positiv sein."
         if amount > self.balance:
             return f"Der Betrag überschreitet den aktuellen Kontostand von {self.balance}."
-        self.balance += amount
-        return (f"{amount}€ wurde von dem Konto der {self.department} Abteilung abgebucht. "
+        self.transactions.append(-amount)
+        self.balance -= amount
+        return (f"{amount}€ wurde von dem Konto der {self._dep_name} Abteilung abgebucht. "
               f"Neuer Kontostand: {self.balance}€")
 
     @classmethod
@@ -51,11 +65,7 @@ if __name__ == '__main__':
     account1 = Clb_dep_acc("Abteilung 1", 1000, [500, -30])
     account2 = Clb_dep_acc("Abteilung 2", 1500)
     account3 = Clb_dep_acc("Abteilung 2", 500)
-    print(Clb_dep_acc.lst_of_dep)
-    print(Clb_dep_acc.lst_of_dep[0]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[2]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart._department._dep_name)
+
 '''    print(account2.transactions)
     print(account1.transactions)
     print(Clb_dep_acc.lst_of_dep)
