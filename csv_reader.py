@@ -1,6 +1,6 @@
 import csv
 
-from User import Administrator, User, Referent_Finanzen
+from User import Administrator, User, Referent_Finanzen, Kassenwart
 from entry_field import read_cache
 
 def read_dep_csv():
@@ -69,4 +69,12 @@ if __name__ == '__main__':
     print(Referent_Finanzen.view_all_transactions())
     print('')
     print(Referent_Finanzen.view_transaction_history('golf'))
+    Administrator.get_departments()
+    print('')
+    print(kassenwart.transfer_to(4, 'schwimmen'))
+    Administrator.get_departments()
+    print(kassenwart.transfer_to(400, 'schwimmen'))
+    print(kassenwart.transfer_to(-400, 'schwimmen'))
+    kassenwart.transfer_to('shuh', 'schwimmen')
+    kassenwart.transfer_from(13.4567, 'schwimmen')
     Administrator.get_departments()

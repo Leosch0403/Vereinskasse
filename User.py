@@ -36,19 +36,86 @@ class Kassenwart(User):
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
     def deposit(self, amount):
-        amount = float(amount)
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
         for dep in Clb_dep_acc.lst_of_dep:
             if self._department == dep._dep_name:
                 return dep.deposit_money(amount)
 
     def remove(self, amount):
-        amount = float(amount)
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
         for dep in Clb_dep_acc.lst_of_dep:
             if self._department == dep._dep_name:
                 return dep.remove_money(amount)
 
-    def transfer(self):
-        pass
+    def transfer_from(self, amount, tgt_dep):
+        tgt_dep = tgt_dep.lower()
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
+        # search for departments
+        for dep in Clb_dep_acc.lst_of_dep:
+            if dep._dep_name == tgt_dep:
+                target_dep = dep
+            if dep._dep_name == self._department:
+                source_dep = dep
+
+        # Confirm existence of departments
+        if not target_dep:
+            return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
+        if not source_dep:
+            return f"Error: Das eigene Konto '{self._department}' existiert nicht."
+
+        # Check whether the amount exceeds the balance or is negative
+        if amount < 0:
+            return f"Error: Die zu abbuchende Summe {amount}€ muss positiv sein."
+        if amount > target_dep.balance:
+            return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {tgt_dep}."
+
+        # Transfer money
+        target_dep.remove_money(amount)
+        source_dep.deposit_money(amount)
+        return f"Es wurde {amount} vom {tgt_dep} Konto zum {self._department} Konto transferiert."
+
+    def transfer_to(self, amount, tgt_dep):
+        tgt_dep = tgt_dep.lower()
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
+        # search for departments
+        for dep in Clb_dep_acc.lst_of_dep:
+            if dep._dep_name == tgt_dep:
+                target_dep = dep
+            if dep._dep_name == self._department:
+                source_dep = dep
+
+        # Confirm existence of departments
+        if not target_dep:
+            return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
+        if not source_dep:
+            return f"Error: Das eigene Konto '{self._department}' existiert nicht."
+
+        # Check whether the amount exceeds the balance or is below 0
+        if amount < 0:
+            return f"Error: Die zu abbuchende Summe {amount}€ muss positiv sein."
+        if amount > source_dep.balance:
+            return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {self._department}."
+
+        # Transfer money
+        source_dep.remove_money(amount)
+        target_dep.deposit_money(amount)
+        return f"Es wurde {amount} vom {tgt_dep} Konto zum {self._department} Konto transferiert."
 
 class Referent_Finanzen(User):
 
