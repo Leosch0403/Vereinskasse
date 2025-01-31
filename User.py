@@ -47,6 +47,11 @@ class Referent_Finanzen(User):
         pass
 
 class Administrator(User):
+    """
+    Administrator class inherits from User and provides functionalities
+    to manage departments and users, including creating and deleting departments,
+    and managing different types of users (e.g., Kassenwart, Admin, User, Referent_Finanzen).
+    """
 
     def __init__(self,  username: str, password: str):
         super().__init__(username, password)
@@ -54,9 +59,11 @@ class Administrator(User):
 
     @classmethod
     def create_department(self, name, balance : int | float, trans_history=None):
-
+        """
+        Creates a new department with the specified name, balance, and transaction history.
+        Checks if the balance is valid and whether the department already exists.
+        """
         name = name.lower()
-
         # Check the value and type of input balance
         if not isinstance(balance, (int, float)) or balance < 0:
             return "Abteilung kann nicht erstellt werden, der Anfangsbestand muss eine positive Zahl sein."
@@ -72,9 +79,12 @@ class Administrator(User):
 
     @classmethod
     def del_department(self, name):
+        """
+        Deletes the department with the given name if it exists.
+        Returns a message indicating success or failure.
+        """
         name = name.lower()
-
-        # Iterate through list of objects and find the department
+        # Iterate through list of objects and finds the department
         for obj in Clb_dep_acc.lst_of_dep:
             if obj._department == name:
                 Clb_dep_acc.lst_of_dep.remove(obj)
@@ -84,11 +94,12 @@ class Administrator(User):
 
     @classmethod
     def create_kassenwart(self, username, password, department):
-
+        """
+        Creates a Kassenwart user and assigns them to a department.
+        Checks if the user or department already exists before creating the user.
+        """
         # boolean indicates, whether object already exists
-        finder_u = False
         finder_d = False
-
         # Error prevention
         name = username.lower()
         department = department.lower()
@@ -96,7 +107,6 @@ class Administrator(User):
         # Check whether user already exists
         for user in User.lst_of_users:
             if name in user._username:
-                finder_u = True
                 return f"Der User {name} existiert schon."
 
         # Check whether department doesn't exist
@@ -108,16 +118,16 @@ class Administrator(User):
                     f"Daher kann der Kassenwart nicht zugeordnet werden")
 
         # Create User
-        if not finder_u:
-            new_user = Kassenwart(username, password, department)
-            return (f"Es wurde ein Kassenwart {name} mit der "
-                    f"zugehörigen Abteilung {department} erstellt")
+        new_user = Kassenwart(username, password, department)
+        return (f"Es wurde ein Kassenwart {name} mit der "
+                f"zugehörigen Abteilung {department} erstellt")
 
     @classmethod
     def create_user(self, username, password, usertype):
-
-        # boolean indicates, whether object already exists
-        finder_u = False
+        """
+        Creates a user of the specified type (referent_finanzen, user, admin).
+        Checks if the user already exists before creating the user.
+        """
         # Error prevention
         name = username.lower()
         usertype = usertype.lower()
@@ -125,29 +135,31 @@ class Administrator(User):
         # Check whether user already exists
         for user in User.lst_of_users:
             if name in user._username:
-                finder_u = True
                 return f"Der User {name} existiert bereits."
 
         # Create User
-        if not finder_u:
-            if usertype == 'referent_finanzen':
-                new_user = Referent_Finanzen(name, password)
-                return f"Es wurde ein Finanzreferent erstellt"
-            if usertype == 'user':
-                new_user = User(name, password)
-                return f"Es wurde ein normaler User erstellt"
-            if usertype == 'admin':
-                new_user = Administrator(name, password)
-                return f"Es wurde ein Administrator erstellt"
-            else:
-                return f"Den Usertyp {usertype} gibt es nicht, daher kann er nicht erstellt werden"
+        if usertype == 'referent_finanzen':
+            new_user = Referent_Finanzen(name, password)
+            return f"Es wurde ein Finanzreferent erstellt"
+        if usertype == 'user':
+            new_user = User(name, password)
+            return f"Es wurde ein normaler User erstellt"
+        if usertype == 'admin':
+            new_user = Administrator(name, password)
+            return f"Es wurde ein Administrator erstellt"
+        else:
+            return f"Den Usertyp {usertype} gibt es nicht, daher kann er nicht erstellt werden"
 
     @classmethod
     def del_user(self, name):
+        """
+        Deletes a user by their username.
+        Searches through the list of users and removes the user if found.
+        """
 
-        finder_u = False
-        name = name.lower()
-        index = []
+        finder_u = False  # Indicates whether the user was found
+        name = name.lower()  # Error prevention
+        index = []  # list to store index of found user
 
         # Search for username and add its index to the list
         for i in range(len(User.lst_of_users)):
@@ -164,16 +176,23 @@ class Administrator(User):
 
     @classmethod
     def backup(self):
-        # Backup of department structure + balance
+        """
+        Creates backups of department data and user data.
+        Saves department structure, balance, and transaction history to 'department_csv.csv'.
+        Saves usernames, passwords, roles, and departments (if applicable) to 'users_csv.csv'.
+        """
+        # Backup of department structure and balance
         d_csv = open('department_csv.csv', 'w')
         d_csv.write(f"department;balance;transaction_history\n")
         for dep in Clb_dep_acc.lst_of_dep:
+            # Write each department's data to the CSV
             d_csv.write(f"{dep._department};{dep.balance};{dep.transactions}\n")
 
         # Backup of usernames and passwords
         u_csv = open('users_csv.csv', 'w')
         u_csv.write(f"username;password;role;department\n")
         for user in User.lst_of_users:
+            # Write each user's data to the CSV
             if user._role == 'kassenwart':
                 u_csv.write(f"{user._username};{user._password};{user._role};{user._department}\n")
             else:
@@ -182,11 +201,17 @@ class Administrator(User):
 
     @classmethod
     def get_users(self):
+        """
+        Prints information about all users in the system.
+        """
         for usr in User.lst_of_users:
             print(usr.get_info())
 
     @classmethod
     def get_departments(self):
+        """
+        Prints information about all departments in the system.
+        """
         for dep in Clb_dep_acc.lst_of_dep:
             print(dep.get_information())
 

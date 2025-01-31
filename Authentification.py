@@ -1,3 +1,7 @@
+'''Creates a GUI via tkinter that displays the functionalities of a Login field'''
+
+__author__ = "8569130, Schmid, 7996364, Salehi"
+
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
@@ -5,16 +9,19 @@ import sys
 from entry_field import cache
 from csv_reader import *
 
+# Import data from CSV files
+read_all_csv()
+
 # Init main frame
 root = tk.Tk()
-root.title('Startbildschirm')
+root.title('Login Screen')
 root.geometry('400x300')
 root.configure(background='white')
 
-read_user_csv()
-print(User.lst_of_users)
+def exit_program():
+    root.destroy()
 
-def entry_field_auth(fst_label, snd_label, tgt_function):
+def entry_field_auth(fst_label, snd_label):
     """
     Creates input fields for username and password along with a submit button.
 
@@ -47,6 +54,11 @@ def entry_field_auth(fst_label, snd_label, tgt_function):
     start_button = tk.Button(root, font='Arial', text='Eingabe bestaetigen',
                              command=lambda: login(n_entry.get(), p_entry.get()))
     start_button.pack(pady=10)
+
+    # Button to end program
+    end_button = tk.Button(root, font='Arial', text='Programm beenden',
+                             command=exit_program)
+    end_button.pack()
 
 
 def login(input_name, input_password):
@@ -98,7 +110,7 @@ def login(input_name, input_password):
 
 
 # Create entry fields and assign the login function to the button
-entry_field_auth('Username:', 'Passwort:', login)
+entry_field_auth('Username:', 'Passwort:')
 
 # Start the Tkinter event loop
 root.mainloop()

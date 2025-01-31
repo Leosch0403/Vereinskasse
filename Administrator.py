@@ -1,4 +1,6 @@
-__author__ = 'Leonard Schmid'
+'''Creates a GUI via tkinter that displays the functionalities of an administrator'''
+
+__author__ = "8569130, Schmid, 7996364, Salehi"
 
 from User import *
 from entry_field import *
@@ -6,24 +8,16 @@ import tkinter as tk
 import subprocess
 import sys
 from tkinter import messagebox
-from csv_reader import read_user_csv, read_dep_csv, read_all_csv
+from csv_reader import read_user_csv, read_dep_csv, read_all_csv, start_tk_module
 
-'''# Read Zwischenspeicher and set the input user as admin
-user = read_cache()[0]
-for usr in lst_of_Accounts:
-    if user == usr._username:
-        admin = usr'''
+# Import data from CSV files and set the current user
+current_user = start_tk_module()
 
-read_all_csv()
-Administrator.get_users()
 #init main frame
 root = tk.Tk()
 root.title('Administrator')
 root.configure(background='white')
 root.geometry("800x400")
-
-# Create Testobjects
-current_user = User.lst_of_users[2]
 
 def logout():
     """

@@ -4,35 +4,34 @@ import sys
 
 def read_cache():
     """
-    Reads data from 'Zwischenspeicher.txt' and returns the first two lines.
+    Reads data from 'Zwischenspeicher.txt'.
 
     Returns:
-        tuple: A tuple containing the first and second lines from the file.
+        list: A list containing the lines from the file.
     """
     lines = []
+    # Open CSV file
     with open('Zwischenspeicher.txt', 'r') as file:
         for line in file:
             lines.append(line.strip())
     return lines
 
-def cache(infomations):
+def cache(infomations: list):
     """
-    Writes the provided 2 information into 'Zwischenspeicher.txt' in 2 seperate lines,
+    Writes the provided information into 'Zwischenspeicher.txt' in seperate lines,
     replacing its current content.
-
-    Args:
-        info_1 (str): The first piece of information to write.
-        info_2 (str): The second piece of information to write.
+    
+    :param infomations: list
     """
+    # Open Zwischenspeicher in write mode
     with open('Zwischenspeicher.txt', 'w') as new_file:
         for line in infomations:
             new_file.write(line + "\n")
 
 def end_entry_field(information, root):
     """
-    Saves the input data (second to last object in list) via the cache function in a txt file,
-    sends the user to the next program (first object in list)
-    and closes the input window at the end.
+    Saves the input data via the cache function in a txt file
+    and closes the input window
 
         :param information: the list of information
         :param root: The tkinter root window to be closed.
@@ -42,11 +41,9 @@ def end_entry_field(information, root):
 
 def entry_field(information):
     """
-    Creates a window with two input fields and a submit button.
+    Creates a window with a varying amount of input fields and a submit button.
 
-    Args:
-        fst_line (str): The label text for the first input field.
-        snd_line (str): The label text for the second input field.
+         :param information: the list of information
     """
     root_2 = tk.Tk()  # Create a new tkinter window
     root_2.title('Eingabefeld')
@@ -83,7 +80,6 @@ def entry_field(information):
 def run_entry_field():
     """
     Reads the cache data and opens the input window.
-    This function is executed when the script is run directly.
     """
     infos = read_cache()  # Read the cache data
     entry_field(infos)  # Open the input window
