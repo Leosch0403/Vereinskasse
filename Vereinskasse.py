@@ -1,4 +1,6 @@
-__author__ = 'Leonard Schmid'
+'''Defines Classes that are used to simulate accounts of departments of a Club'''
+
+__author__ = "8569130, Schmid, 7996364, Salehi"
 import ast
 
 class Clb_dep_acc:
@@ -11,7 +13,7 @@ class Clb_dep_acc:
         Clb_dep_acc.lst_of_dep.append(self)
         self._dep_name = department.lower()
         self.balance = round(balance, 2)
-        self.transactions = ast.literal_eval(trans_history)
+        self.transactions = ast.literal_eval(trans_history)  # Turns input into list
 
 
     def get_information(self):
@@ -66,11 +68,3 @@ if __name__ == '__main__':
     account1 = Clb_dep_acc("Abteilung 1", 1000, [500, -30])
     account2 = Clb_dep_acc("Abteilung 2", 1500)
     account3 = Clb_dep_acc("Abteilung 2", 500)
-
-'''    print(account2.transactions)
-    print(account1.transactions)
-    print(Clb_dep_acc.lst_of_dep)
-    print(Clb_dep_acc.del_department('Abteilung 1'))
-    print(Clb_dep_acc.del_department('Abteilung f'))
-    print(Clb_dep_acc.lst_of_dep)
-    print(account2.get_information())'''

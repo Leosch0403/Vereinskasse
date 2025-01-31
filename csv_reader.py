@@ -1,5 +1,8 @@
-import csv
+'''Defines functions that can read a CSV file and init Users and departments accordingly'''
 
+__author__ = "8569130, Schmid, 7996364, Salehi"
+
+import csv
 from User import Administrator, User, Referent_Finanzen, Kassenwart
 from entry_field import read_cache
 
