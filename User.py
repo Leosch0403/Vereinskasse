@@ -47,6 +47,9 @@ class Kassenwart(User):
             if self._department == dep._dep_name:
                 return dep.remove_money(amount)
 
+    def transfer(self):
+        pass
+
 class Referent_Finanzen(User):
 
     def __init__(self, username, password):
