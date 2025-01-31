@@ -1,17 +1,17 @@
-class Referent_in_Finanzen(User):
-    role: str = 'referent'
+from Vereinskasse import Club_Accounts
+from User import User
+
+class Kassenwart(User):
+    role: str = 'kassenwart'
 
     def __init__(self, name, password, account: Club_Accounts):
         super().__init__(name, password)
         self.account = account
 
-    def view_all_transactions(self):
-        for transaction in self.account.transactions:
-            print(f"{transaction['type'].capitalize()}: {transaction['amount']} - {transaction['description']}")
+    def deposit_money(self, amount: float, description: str):
+        self.account.deposit_money(amount)
+        print(f"Deposited money: {amount} - {description}")
 
-    def view_transaction_history(self):
-        history = f"Transaction History:\n"
-        for transaction in self.account.transactions:
-            history += f"{transaction['type'].capitalize()}: {transaction['amount']} - {transaction['description']}\n"
-        return history
-
+    def remove_money(self, amount: float, description: str):
+        self.account.remove_money(amount)
+        print(f"Removed money: {amount} - {description}")
