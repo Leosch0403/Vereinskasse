@@ -1,6 +1,6 @@
 import csv
 
-from User import Administrator, User
+from User import Administrator, User, Referent_Finanzen
 from entry_field import read_cache
 
 def read_dep_csv():
@@ -57,13 +57,11 @@ def start_tk_module():
 if __name__ == '__main__':
     read_all_csv()
     Administrator.get_users()
-    Administrator.del_user('mika')
-    print('')
-    Administrator.get_users()
-    Administrator.get_departments()
-    print(Administrator.create_department('Golf',0))
     print('')
     Administrator.get_departments()
-    Administrator.del_department('Schach')
+    print(Administrator.create_department('Golf', 0))
     print('')
-    Administrator.get_departments()
+    print(Referent_Finanzen.view_all_transactions())
+    print('')
+    print(Referent_Finanzen.view_transaction_history('uszzbusbh'))
+    print(Referent_Finanzen.view_transaction_history('golf'))
