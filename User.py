@@ -1,30 +1,28 @@
 __author__ = 'Leonard Schmid'
-import csv
-from Vereinskasse import Club_Accounts
 
-# Lists that contain the created objects
-lst_of_Accounts = []
-lst_of_departments = []
+from Vereinskasse import Clb_dep_acc
 
 class User:
+    lst_of_users = []
 
     def __init__(self, username, password):
         self._username = username
         self._password = password
         self._role = 'user'
+        User.lst_of_users.append(self)
 
     def change_password(self, old_password, new_password):
 
         if old_password == self._password:
             self._password = new_password
-            return f"Das Passwort von {self._username} wurde von {old_password} zu {new_password} geändert."
+            return (f"Das Passwort von {self._username} wurde "
+                    f"von {old_password} zu {new_password} geändert.")
         else:
             return (f"Das eingegebene alte Passwort {old_password} ist Falsch. "
                     f"Daher kommt es zu keiner Änderung.")
 
-    def info(self):
+    def get_info(self):
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
-
 
 class Kassenwart(User):
 
@@ -33,7 +31,7 @@ class Kassenwart(User):
         self._role = 'kassenwart'
         self._department = department
 
-    def info(self):
+    def get_info(self):
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
@@ -48,18 +46,15 @@ class Referent_Finanzen(User):
         # Muss einfach nur self.transactions von dem Objekt aufrufen
         pass
 
-
-
 class Administrator(User):
 
     def __init__(self,  username: str, password: str):
         super().__init__(username, password)
         self._role = 'admin'
 
-    def create_department(self, name, balance : int | float):
+    @classmethod
+    def create_department(self, name, balance : int | float, trans_history=None):
 
-        # boolean indicates, whether object already exists
-        finder = False
         name = name.lower()
 
         # Check the value and type of input balance
@@ -67,33 +62,27 @@ class Administrator(User):
             return "Abteilung kann nicht erstellt werden, der Anfangsbestand muss eine positive Zahl sein."
 
         # Check whether object already exists
-        if len(lst_of_departments) == 0:
-            pass
-        else:
-            for dpt in lst_of_departments:
-                if name in dpt._department:
-                    print(f"Die Abteilung {name} existiert schon.")
-                    finder = True
+        for dpt in Clb_dep_acc.lst_of_dep:
+            if name == dpt._department:
+                return f"Die Abteilung {name} existiert schon."
 
         # If object doesn't exist create it and add to list
-        if not finder:
-            new_account = Club_Accounts(name, balance)
-            lst_of_departments.append(new_account)
-            return 'Abteilung erstellt'
-        else:
-            return 'Abteilung existiert bereits und kann daher nicht erstellt werden'
+        new_account = Clb_dep_acc(name, balance, trans_history)
+        return f"Abteilung {name} mit einem Kontostand von {balance} erstellt"
 
+    @classmethod
     def del_department(self, name):
         name = name.lower()
 
         # Iterate through list of objects and find the department
-        for obj in lst_of_departments:
+        for obj in Clb_dep_acc.lst_of_dep:
             if obj._department == name:
-                lst_of_departments.remove(obj)
+                Clb_dep_acc.lst_of_dep.remove(obj)
                 return f"Die Abteilung {name} wurde gelöscht."
 
         return f"Die Abteilung {name} existiert nicht und kann nicht gelöscht werden."
 
+    @classmethod
     def create_kassenwart(self, username, password, department):
 
         # boolean indicates, whether object already exists
@@ -105,13 +94,13 @@ class Administrator(User):
         department = department.lower()
 
         # Check whether user already exists
-        for user in lst_of_Accounts:
+        for user in User.lst_of_users:
             if name in user._username:
                 finder_u = True
                 return f"Der User {name} existiert schon."
 
         # Check whether department doesn't exist
-        for dpt in lst_of_departments:
+        for dpt in Clb_dep_acc.lst_of_dep:
             if department == dpt._department:
                 finder_d = True
         if not finder_d:
@@ -121,8 +110,10 @@ class Administrator(User):
         # Create User
         if not finder_u:
             new_user = Kassenwart(username, password, department)
-            lst_of_Accounts.append(new_user)
+            return (f"Es wurde ein Kassenwart {name} mit der "
+                    f"zugehörigen Abteilung {department} erstellt")
 
+    @classmethod
     def create_user(self, username, password, usertype):
 
         # boolean indicates, whether object already exists
@@ -132,7 +123,7 @@ class Administrator(User):
         usertype = usertype.lower()
 
         # Check whether user already exists
-        for user in lst_of_Accounts:
+        for user in User.lst_of_users:
             if name in user._username:
                 finder_u = True
                 return f"Der User {name} existiert bereits."
@@ -141,19 +132,17 @@ class Administrator(User):
         if not finder_u:
             if usertype == 'referent_finanzen':
                 new_user = Referent_Finanzen(name, password)
-                lst_of_Accounts.append(new_user)
                 return f"Es wurde ein Finanzreferent erstellt"
             if usertype == 'user':
                 new_user = User(name, password)
-                lst_of_Accounts.append(new_user)
                 return f"Es wurde ein normaler User erstellt"
             if usertype == 'admin':
                 new_user = Administrator(name, password)
-                lst_of_Accounts.append(new_user)
                 return f"Es wurde ein Administrator erstellt"
             else:
                 return f"Den Usertyp {usertype} gibt es nicht, daher kann er nicht erstellt werden"
 
+    @classmethod
     def del_user(self, name):
 
         finder_u = False
@@ -161,49 +150,61 @@ class Administrator(User):
         index = []
 
         # Search for username and add its index to the list
-        for i in range(len(lst_of_Accounts)):
-            if name == lst_of_Accounts[i]._username:
+        for i in range(len(User.lst_of_users)):
+            if name == User.lst_of_users[i]._username:
                 finder_u = True
                 index.append(i)
         # If found delete the object according to index
         for num in index:
-            del lst_of_Accounts[num]
+            del User.lst_of_users[num]
             return f"Der User {name} wurde gelöscht."
 
         if not finder_u:
             return f"Der User {name} existiert nicht und kann daher nicht gelöscht werden."
 
+    @classmethod
     def backup(self):
         # Backup of department structure + balance
         d_csv = open('department_csv.csv', 'w')
-        d_csv.write(f"department;balance;transaction history\n")
-        for dep in lst_of_departments:
+        d_csv.write(f"department;balance;transaction_history\n")
+        for dep in Clb_dep_acc.lst_of_dep:
             d_csv.write(f"{dep._department};{dep.balance};{dep.transactions}\n")
 
         # Backup of usernames and passwords
         u_csv = open('users_csv.csv', 'w')
         u_csv.write(f"username;password;role;department\n")
-        for user in lst_of_Accounts:
+        for user in User.lst_of_users:
             if user._role == 'kassenwart':
                 u_csv.write(f"{user._username};{user._password};{user._role};{user._department}\n")
             else:
                 u_csv.write(f"{user._username};{user._password};{user._role}\n")
         return f"Backup erfolgreich erstellt"
 
+    @classmethod
     def get_users(self):
-        for usr in lst_of_Accounts:
-            print(usr.info())
+        for usr in User.lst_of_users:
+            print(usr.get_info())
+
+    @classmethod
+    def get_departments(self):
+        for dep in Clb_dep_acc.lst_of_dep:
+            print(dep.get_information())
 
 
 if __name__ == '__main__':
-    admin = Administrator('Hans', 'p0815')
-    lst_of_Accounts.append(admin)
+    print(User.lst_of_users)
+    print(Clb_dep_acc.lst_of_dep)
+    Administrator.create_department('Schach', 34)
+    print(Clb_dep_acc.lst_of_dep)
+    Administrator.create_department('Schwimen', 20, [80,-60])
+    print(Clb_dep_acc.lst_of_dep)
+    Administrator.get_departments()
 
-    admin.del_user('bob')
+
+'''    admin.del_user('bob')
     admin.create_department('Tanzen', 26)
     admin.create_department('FUßBALL', 126)
     kassenwart_1 = Kassenwart('kathy', '#dead', 'fußball')
-    lst_of_Accounts.append(kassenwart_1)
     admin.create_user('mika', 'hallo', 'referent')
     admin.create_user('Jochen', 'hiwi', 'admin')
     admin.create_user('dennis_05', 'jaaahr', 'user')
@@ -213,6 +214,6 @@ if __name__ == '__main__':
     print('')
     admin.del_user('dennis_05')
     admin.del_user('MiKa')
-    lst_of_Accounts[1].change_password('#dead', 'neues Passwort')
+    admin.change_password('#dead', 'neues Passwort')
     admin.get_users()
-    admin.backup()
+    #admin.backup()'''

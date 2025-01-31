@@ -55,7 +55,6 @@ def entry_field(information):
     # Bring window to the front
     root_2.lift()
     root_2.attributes('-topmost', True)
-    root_2.after(100, lambda: root_2.attributes('-topmost', False))
 
     entries = []
     for i in range(len(information)):

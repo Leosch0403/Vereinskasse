@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import subprocess
 import sys
-from User import Administrator
 from entry_field import cache
+from csv_reader import *
 
 # Init main frame
 root = tk.Tk()
@@ -11,16 +11,8 @@ root.title('Startbildschirm')
 root.geometry('400x300')
 root.configure(background='white')
 
-# Testfaelle
-admin_name = ['Hannes', 'Anna']
-admin_password = ['p_0815', 'anna_03']
-
-# Erstellen eines neuen Auto-Objekts und Hinzufügen zur Liste
-admin_lst = []
-for name, password in zip(admin_name, admin_password):
-    neuer_admin = Administrator(name, password)
-    admin_lst.append(neuer_admin)
-
+read_user_csv()
+print(User.lst_of_users)
 
 def entry_field_auth(fst_label, snd_label, tgt_function):
     """
@@ -53,7 +45,7 @@ def entry_field_auth(fst_label, snd_label, tgt_function):
 
     # Button to submit login details
     start_button = tk.Button(root, font='Arial', text='Eingabe bestaetigen',
-                             command=lambda: tgt_function(n_entry.get(), p_entry.get()))
+                             command=lambda: login(n_entry.get(), p_entry.get()))
     start_button.pack(pady=10)
 
 
@@ -72,7 +64,7 @@ def login(input_name, input_password):
     user_role = None
 
     # Iterate through the admin list to check for matches
-    for obj in admin_lst:
+    for obj in User.lst_of_users:
         if input_name == obj._username:
             name_count = True  # Username found
             user_name = obj._username
@@ -87,14 +79,14 @@ def login(input_name, input_password):
                             f"Willkommen {input_name}, du bist {user_role}.")
 
         # Save username in Zwischenspeicher
-        cache([user_name])
+        cache([user_name.lower()])
 
-        # Open a new script according to userrole and close the current application
+        # Open a new script according to userrole
         if user_role == 'admin':
             subprocess.Popen([sys.executable, 'Administrator.py'])
         elif user_role == 'kassenwart':
             pass
-        root.destroy()
+        root.destroy()  # close the current application
 
     # Handle incorrect credentials
     elif not name_count and not password_count:

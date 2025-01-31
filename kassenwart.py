@@ -1,10 +1,10 @@
 
-from Vereinskasse import Club_Accounts
+from Vereinskasse import Clb_dep_acc
 
 lst_of_departments = []
-test_account = Club_Accounts('Schwimmen', 45)
+test_account = Clb_dep_acc('Schwimmen', 45)
 print(test_account._department)
-snd_account = Club_Accounts('test', 33.2)
+snd_account = Clb_dep_acc('test', 33.2)
 lst_of_departments.append(test_account)
 lst_of_departments.append(snd_account)
 print(lst_of_departments)
@@ -45,7 +45,7 @@ class Kassenwart:
 lst_of_departments = []
 # Example usage
 if __name__ == "__main__":
-    test = Club_Accounts('Schwimmen', 35)
+    test = Clb_dep_acc('Schwimmen', 35)
     lst_of_departments.append(test)
 
 
