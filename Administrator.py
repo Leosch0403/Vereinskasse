@@ -75,7 +75,7 @@ def lst_dep():
     # fill rest of grid with the usernames
     count = 1
     for dep in Clb_dep_acc.lst_of_dep:
-        username = tk.Label(info_frame, background='white', text=f"{dep._department}")
+        username = tk.Label(info_frame, background='white', text=f"{dep._dep_name}")
         username.grid(row=count, column=0)
 
         userrole = tk.Label(info_frame, background='white', text=f"{dep.balance}")
@@ -153,7 +153,7 @@ def create_usr():
     """
     # Define the header of the entry field and open it
     cache(['Username:', 'Passwort:', 'Rolle:'])
-    messagebox.showinfo('User erstellen', f"Es gibt folgende Rollen: Admin, User, Referent_finanzen")
+    messagebox.showinfo('User erstellen', f"Es gibt folgende Rollen: Admin, Mitglied, Referent_finanzen")
     process = subprocess.Popen([sys.executable, 'entry_field.py'])
     process.wait()  # Wait until entry field is closed
     data = read_cache()  # Read input data

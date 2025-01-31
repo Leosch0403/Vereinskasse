@@ -74,6 +74,7 @@ def login(input_name, input_password):
     name_count = False
     password_count = False
     user_role = None
+    input_name = input_name.lower()
 
     # Iterate through the admin list to check for matches
     for obj in User.lst_of_users:
@@ -91,7 +92,7 @@ def login(input_name, input_password):
                             f"Willkommen {input_name}, du bist {user_role}.")
 
         # Save username in Zwischenspeicher
-        cache([user_name.lower()])
+        cache([user_name])
 
         # Open a new script according to userrole
         if user_role == 'admin':

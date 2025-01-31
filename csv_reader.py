@@ -1,6 +1,6 @@
 import csv
 
-from User import Administrator, User
+from User import Administrator, User, Referent_Finanzen
 from entry_field import read_cache
 
 def read_dep_csv():
@@ -32,7 +32,7 @@ def read_user_csv():
             role = line[2]
             if role == 'kassenwart':
                 Administrator.create_kassenwart(line[0], line[1], line[3])
-            if role == 'admin' or 'user' or 'referent_finanzen':
+            if role == 'admin' or 'mitglied' or 'referent_finanzen':
                 Administrator.create_user(line[0], line[1], line[2])
 
 def read_all_csv():
@@ -57,13 +57,16 @@ def start_tk_module():
 if __name__ == '__main__':
     read_all_csv()
     Administrator.get_users()
-    Administrator.del_user('mika')
+    kassenwart = User.lst_of_users[6]
     print('')
-    Administrator.get_users()
+    print(kassenwart.get_info())
     Administrator.get_departments()
-    print(Administrator.create_department('Golf',0))
+    print(kassenwart.deposit(-30))
+    print(kassenwart.remove(12.789))
     print('')
     Administrator.get_departments()
-    Administrator.del_department('Schach')
+    kassenwart.deposit(33.87)
+    print(Referent_Finanzen.view_all_transactions())
     print('')
+    print(Referent_Finanzen.view_transaction_history('golf'))
     Administrator.get_departments()

@@ -8,8 +8,11 @@ class User:
     def __init__(self, username, password):
         self._username = username
         self._password = password
-        self._role = 'user'
+        self._role = 'mitglied'
         User.lst_of_users.append(self)
+
+    def get_info(self):
+        return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
 
     def change_password(self, old_password, new_password):
 
@@ -21,19 +24,31 @@ class User:
             return (f"Das eingegebene alte Passwort {old_password} ist Falsch. "
                     f"Daher kommt es zu keiner Änderung.")
 
-    def get_info(self):
-        return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
-
 class Kassenwart(User):
 
     def __init__(self, username, password, department):
         super().__init__(username, password)
         self._role = 'kassenwart'
-        self._department = department
+        self._department = department.lower()
 
     def get_info(self):
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
+
+    def deposit(self, amount):
+        amount = float(amount)
+        for dep in Clb_dep_acc.lst_of_dep:
+            if self._department == dep._dep_name:
+                return dep.deposit_money(amount)
+
+    def remove(self, amount):
+        amount = float(amount)
+        for dep in Clb_dep_acc.lst_of_dep:
+            if self._department == dep._dep_name:
+                return dep.remove_money(amount)
+
+    def transfer(self):
+        pass
 
 class Referent_Finanzen(User):
 
@@ -41,10 +56,20 @@ class Referent_Finanzen(User):
         super().__init__(username, password)
         self._role = 'referent_finanzen'
 
-    def view_trans_history(self, name):
-        # Alle Sachen in lst_of_dep durchgehen und dann den richtigen suchen
-        # Muss einfach nur self.transactions von dem Objekt aufrufen
-        pass
+    @classmethod
+    def view_all_transactions(cls):
+        all_trans = []
+        for dep in Clb_dep_acc.lst_of_dep:
+            all_trans.append([dep._dep_name, dep.transactions])
+        return all_trans
+
+    @classmethod
+    def view_transaction_history(cls, department):
+        department = department.lower()
+        for dep in Clb_dep_acc.lst_of_dep:
+            if department == dep._dep_name:
+                return dep.transactions
+        return f'Die Abteilung {department} existiert nicht und kann daher nicht eingesehen werden.'
 
 class Administrator(User):
     """
@@ -70,7 +95,7 @@ class Administrator(User):
 
         # Check whether object already exists
         for dpt in Clb_dep_acc.lst_of_dep:
-            if name == dpt._department:
+            if name == dpt._dep_name:
                 return f"Die Abteilung {name} existiert schon."
 
         # If object doesn't exist create it and add to list
@@ -86,7 +111,7 @@ class Administrator(User):
         name = name.lower()
         # Iterate through list of objects and finds the department
         for obj in Clb_dep_acc.lst_of_dep:
-            if obj._department == name:
+            if obj._dep_name == name:
                 Clb_dep_acc.lst_of_dep.remove(obj)
                 return f"Die Abteilung {name} wurde gelöscht."
 
@@ -111,7 +136,7 @@ class Administrator(User):
 
         # Check whether department doesn't exist
         for dpt in Clb_dep_acc.lst_of_dep:
-            if department == dpt._department:
+            if department == dpt._dep_name:
                 finder_d = True
         if not finder_d:
             return (f"Die Abteilung {department} existiert noch nicht. "
@@ -141,7 +166,7 @@ class Administrator(User):
         if usertype == 'referent_finanzen':
             new_user = Referent_Finanzen(name, password)
             return f"Es wurde ein Finanzreferent erstellt"
-        if usertype == 'user':
+        if usertype == 'mitglied':
             new_user = User(name, password)
             return f"Es wurde ein normaler User erstellt"
         if usertype == 'admin':
@@ -186,7 +211,7 @@ class Administrator(User):
         d_csv.write(f"department;balance;transaction_history\n")
         for dep in Clb_dep_acc.lst_of_dep:
             # Write each department's data to the CSV
-            d_csv.write(f"{dep._department};{dep.balance};{dep.transactions}\n")
+            d_csv.write(f"{dep._dep_name};{dep.balance};{dep.transactions}\n")
 
         # Backup of usernames and passwords
         u_csv = open('users_csv.csv', 'w')
@@ -217,28 +242,21 @@ class Administrator(User):
 
 
 if __name__ == '__main__':
-    print(User.lst_of_users)
-    print(Clb_dep_acc.lst_of_dep)
-    Administrator.create_department('Schach', 34)
-    print(Clb_dep_acc.lst_of_dep)
-    Administrator.create_department('Schwimen', 20, [80,-60])
+    Administrator.create_department("Abteilung 1", 470, [500, -30])
+    Administrator.create_department("Abteilung 2", 1500)
+    print(Administrator.create_department("Abteilung 2", 500))
+    print(Administrator.create_department("Abteilung 3", 200))
+    Administrator.create_kassenwart('Maik', 'dniwn', 'Abteilung 2')
+    a = Administrator.create_kassenwart('Tim', 'fwa', 'Abteilung 5')
+    print(a)
     print(Clb_dep_acc.lst_of_dep)
     Administrator.get_departments()
+    print(User.lst_of_users)
+    Administrator.get_users()
+'''    print(Clb_dep_acc.lst_of_dep[0]._ksnwart.get_info())
+    print(Clb_dep_acc.lst_of_dep[1]._ksnwart.get_info())
+    print(Clb_dep_acc.lst_of_dep[2]._ksnwart.get_info())
+    print(Clb_dep_acc.lst_of_dep[1]._ksnwart._department._dep_name)
 
-
-'''    admin.del_user('bob')
-    admin.create_department('Tanzen', 26)
-    admin.create_department('FUßBALL', 126)
-    kassenwart_1 = Kassenwart('kathy', '#dead', 'fußball')
-    admin.create_user('mika', 'hallo', 'referent')
-    admin.create_user('Jochen', 'hiwi', 'admin')
-    admin.create_user('dennis_05', 'jaaahr', 'user')
-    admin.create_kassenwart('mina', 'm&m', 'tanzen')
-
-    admin.get_users()
-    print('')
-    admin.del_user('dennis_05')
-    admin.del_user('MiKa')
-    admin.change_password('#dead', 'neues Passwort')
-    admin.get_users()
-    #admin.backup()'''
+    (f"Es wurde ein Kassenwart {name} mit der "
+     f"zugehörigen Abteilung {department} erstellt")'''
