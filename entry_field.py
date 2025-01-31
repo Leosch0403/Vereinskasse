@@ -37,8 +37,7 @@ def end_entry_field(information, root):
         :param information: the list of information
         :param root: The tkinter root window to be closed.
     """
-    cache(information[1:])
-    subprocess.Popen([sys.executable, information[0]])
+    cache(information)
     root.destroy()
 
 def entry_field(information):
@@ -50,8 +49,13 @@ def entry_field(information):
         snd_line (str): The label text for the second input field.
     """
     root_2 = tk.Tk()  # Create a new tkinter window
-    root_2.title('Input Field')
+    root_2.title('Eingabefeld')
     root_2.configure(background='white')
+
+    # Bring window to the front
+    root_2.lift()
+    root_2.attributes('-topmost', True)
+    root_2.after(100, lambda: root_2.attributes('-topmost', False))
 
     entries = []
     for i in range(len(information)):
@@ -69,8 +73,6 @@ def entry_field(information):
         Gathers the input data from the entry fields, prints it, and passes it to the end_entry_field function.
         """
         informations = [entry.get() for entry in entries]
-        informations.insert(0, information[0])
-        print(informations)
         end_entry_field(informations, root_2)
 
     # Submit button to confirm the input
@@ -90,22 +92,3 @@ def run_entry_field():
 
 if __name__ == '__main__':
     run_entry_field()
-'''
-activebackground: Hintergrundfarbe, wenn das Widget aktiv ist (z. B. wenn ein Button gedrückt wird).
-activeforeground: Vordergrundfarbe (z. B. Textfarbe), wenn das Widget aktiv ist.
-anchor: Ausrichtung des Inhalts innerhalb des Widgets (z. B. n, ne, e, se, s, sw, w, nw, center).
-background / bg: Hintergrundfarbe.
-borderwidth / bd: Breite des Rahmens.
-cursor: Form des Mauszeigers, wenn er über dem Widget ist.
-font: Schriftart und -größe (z. B. "Arial 12 bold").
-foreground / fg: Vordergrundfarbe (z. B. Textfarbe).
-height: Höhe des Widgets (in Pixeln oder Zeilen, je nach Widget).
-highlightbackground: Farbe des Hervorhebungsrahmens, wenn das Widget nicht aktiv ist.
-highlightcolor: Farbe des Hervorhebungsrahmens, wenn das Widget aktiv ist.
-highlightthickness: Dicke des Hervorhebungsrahmens.
-padx: Horizontaler Abstand innerhalb des Widgets.
-pady: Vertikaler Abstand innerhalb des Widgets.
-relief: Stil des Rahmens (flat, raised, sunken, groove, ridge).
-state: Zustand des Widgets (normal, disabled, active).
-takefocus: Gibt an, ob das Widget den Fokus erhalten kann (True oder False).
-width: Breite des Widgets (in Pixeln oder Zeichen, je nach Widget).'''

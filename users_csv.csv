@@ -1,6 +1,5 @@
-username;role
-Hans;admin
-mika;referent_finanzen
-jochen;admin
-dennis_05;user
-mina;kassenwart
+username;password;role;department
+Hans;p0815;admin
+jochen;hiwi;admin
+dennis_05;jaaahr;user
+mina;m&m;kassenwart;tanzen

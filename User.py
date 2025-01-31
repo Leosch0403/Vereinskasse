@@ -17,9 +17,10 @@ class User:
 
         if old_password == self._password:
             self._password = new_password
-            return True
+            return f"Das Passwort von {self._username} wurde von {old_password} zu {new_password} geändert."
         else:
-            return False
+            return (f"Das eingegebene alte Passwort {old_password} ist Falsch. "
+                    f"Daher kommt es zu keiner Änderung.")
 
     def info(self):
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
@@ -63,7 +64,7 @@ class Administrator(User):
 
         # Check the value and type of input balance
         if not isinstance(balance, (int, float)) or balance < 0:
-            return print("Der Anfangsbestand muss eine positive Zahl sein.")
+            return "Abteilung kann nicht erstellt werden, der Anfangsbestand muss eine positive Zahl sein."
 
         # Check whether object already exists
         if len(lst_of_departments) == 0:
@@ -78,14 +79,20 @@ class Administrator(User):
         if not finder:
             new_account = Club_Accounts(name, balance)
             lst_of_departments.append(new_account)
-            return print('Objekt erstellt')
+            return 'Abteilung erstellt'
+        else:
+            return 'Abteilung existiert bereits und kann daher nicht erstellt werden'
 
     def del_department(self, name):
         name = name.lower()
 
+        # Iterate through list of objects and find the department
         for obj in lst_of_departments:
             if obj._department == name:
                 lst_of_departments.remove(obj)
+                return f"Die Abteilung {name} wurde gelöscht."
+
+        return f"Die Abteilung {name} existiert nicht und kann nicht gelöscht werden."
 
     def create_kassenwart(self, username, password, department):
 
@@ -128,22 +135,24 @@ class Administrator(User):
         for user in lst_of_Accounts:
             if name in user._username:
                 finder_u = True
-                return f"Der User {name} existiert schon."
+                return f"Der User {name} existiert bereits."
 
         # Create User
         if not finder_u:
-            if usertype == 'referent':
+            if usertype == 'referent_finanzen':
                 new_user = Referent_Finanzen(name, password)
                 lst_of_Accounts.append(new_user)
+                return f"Es wurde ein Finanzreferent erstellt"
             if usertype == 'user':
                 new_user = User(name, password)
                 lst_of_Accounts.append(new_user)
+                return f"Es wurde ein normaler User erstellt"
             if usertype == 'admin':
                 new_user = Administrator(name, password)
                 lst_of_Accounts.append(new_user)
+                return f"Es wurde ein Administrator erstellt"
             else:
-                return f"Den Usertyp {usertype} gibt es nicht"
-
+                return f"Den Usertyp {usertype} gibt es nicht, daher kann er nicht erstellt werden"
 
     def del_user(self, name):
 
@@ -159,6 +168,7 @@ class Administrator(User):
         # If found delete the object according to index
         for num in index:
             del lst_of_Accounts[num]
+            return f"Der User {name} wurde gelöscht."
 
         if not finder_u:
             return f"Der User {name} existiert nicht und kann daher nicht gelöscht werden."
@@ -166,15 +176,19 @@ class Administrator(User):
     def backup(self):
         # Backup of department structure + balance
         d_csv = open('department_csv.csv', 'w')
-        d_csv.write(f"department;balance\n")
+        d_csv.write(f"department;balance;transaction history\n")
         for dep in lst_of_departments:
-            d_csv.write(f"{dep._department};{dep.balance}\n")
+            d_csv.write(f"{dep._department};{dep.balance};{dep.transactions}\n")
 
         # Backup of usernames and passwords
         u_csv = open('users_csv.csv', 'w')
-        u_csv.write(f"username;role\n")
+        u_csv.write(f"username;password;role;department\n")
         for user in lst_of_Accounts:
-            u_csv.write(f"{user._username};{user._role}\n")
+            if user._role == 'kassenwart':
+                u_csv.write(f"{user._username};{user._password};{user._role};{user._department}\n")
+            else:
+                u_csv.write(f"{user._username};{user._password};{user._role}\n")
+        return f"Backup erfolgreich erstellt"
 
     def get_users(self):
         for usr in lst_of_Accounts:
