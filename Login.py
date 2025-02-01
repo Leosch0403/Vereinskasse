@@ -98,6 +98,8 @@ def login(input_name, input_password):
             subprocess.Popen([sys.executable, 'Administrator_tkinter.py'])
         elif user_role == 'kassenwart':
             subprocess.Popen([sys.executable, 'kassenwart_tkinter.py'])
+        elif user_role == 'referent_finanzen':
+            subprocess.Popen([sys.executable, 'Ref_fin_tkinter.py'])
         root.destroy()  # close the current application
 
     # Handle incorrect credentials

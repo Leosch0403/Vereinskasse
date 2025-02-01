@@ -140,14 +140,14 @@ class Referent_Finanzen(User):
         all_trans = []
         for dep in Clb_dep_acc.lst_of_dep:
             all_trans.append([dep._dep_name, dep.transactions])
-        return all_trans  # Ausgabebeispiel [[name des departments, liste der Transaktionen], [schach, [20, -2.4, 56]]]
+        return all_trans
 
     @classmethod
-    def view_transaction_history(cls, department):  # Eingabe des gewünschten Departments
+    def view_transaction_history(cls, department):
         department = department.lower()
         for dep in Clb_dep_acc.lst_of_dep:
             if department == dep._dep_name:
-                return dep.transactions  # Ausgabebeispiel [liste der Transaktionen] z.B. [20, -2.4, 56]
+                return [dep._dep_name, dep.transactions]
         return f'Die Abteilung {department} existiert nicht und kann daher nicht eingesehen werden.'
 
 class Administrator(User):
