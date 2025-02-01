@@ -14,14 +14,21 @@ import sys
 start_tk_module()
 
 def destroy():
-    old_count = User.user_count
+    '''
+    This function creates a new admin user and initializes the system.
+    It checks if the user count has increased after creation. If successful,
+    it triggers a backup and then starts the login process.
+    '''
+    old_count = User.user_count  # Store the current user count
     user = Administrator.create_user(entry_u.get(), entry_p.get(), 'admin')
     messagebox.showinfo('Admin erstellen', f"{user}")
 
+    # Check if the user count has increased after creating the new admin
     if User.user_count > old_count:
         Administrator.backup()
         messagebox.showinfo('Initialisierung erfolgreich',
                             f"Initialisierung erfolgreich: Du wirst zum Login weitergeführt")
+        # Open the Login.py script for the user to log in and exit current script
         subprocess.Popen([sys.executable, 'Login.py'])
         sys.exit()
     else:

@@ -19,6 +19,9 @@ root.geometry('400x300')
 root.configure(background='white')
 
 def exit_program():
+    """
+    Destroys root
+    """
     root.destroy()
 
 def entry_field_auth(fst_label, snd_label):
@@ -28,10 +31,6 @@ def entry_field_auth(fst_label, snd_label):
     Parameters:
         fst_label (str): Label text for the username field.
         snd_label (str): Label text for the password field.
-        function (function): The function to execute when the button is clicked.
-
-    Returns:
-        tuple: Returns references to the username and password entry fields.
     """
 
     # Label for username input

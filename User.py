@@ -5,6 +5,9 @@ __author__ = "8569130, Schmid, 7996364, Salehi"
 from Vereinskasse import Clb_dep_acc
 
 class User:
+    """
+    It represents an ordinary user  and can perform password changes.
+    """
     lst_of_users = []
     user_count = 0
 
@@ -16,12 +19,21 @@ class User:
         User.user_count += 1
 
     def get_info(self):
+        """
+        Returns the user's informations/ Attributes
+        """
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
 
     def change_password(self, old_password, new_password):
+        """
+        Changes the user's password if the old password matches the current one.
+        Args:
+            old_password (str): The current password.
+            new_password (str): The new password to set.
+        """
 
-        if old_password == self._password:
-            self._password = new_password
+        if old_password == self._password:  # Check if the old password is correct
+            self._password = new_password  # Update password
             return (f"Das Passwort von {self._username} wurde "
                     f"von {old_password} zu {new_password} geändert.")
         else:
@@ -29,6 +41,9 @@ class User:
                     f"Daher kommt es zu keiner Änderung.")
 
 class Kassenwart(User):
+    """
+    It represents a user who has the role of a Kassenwart and can perform transactions.
+    """
 
     def __init__(self, username, password, department):
         super().__init__(username, password)
@@ -36,10 +51,22 @@ class Kassenwart(User):
         self._department = department.lower()
 
     def get_info(self):
+        """
+             Returns the Kassenwart's informations
+        """
+
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
     def deposit(self, amount, reason):
+        """
+        Deposits money into the Kassenwart's department account.
+
+        Args:
+            amount (float): The amount of money to deposit.
+            reason (str): The reason for the deposit.
+        """
+
         try:
             amount = round(float(amount), 2)
         except ValueError:
@@ -50,19 +77,35 @@ class Kassenwart(User):
                 return dep.deposit_money(amount, reason)
 
     def remove(self, amount, reason):
+        """
+        Removes money from the Kassenwart's department account.
+
+        Args:
+            amount (float): The amount of money to remove.
+            reason (str): The reason for the removal.
+        """
         try:
             amount = round(float(amount), 2)
         except ValueError:
             return "Error: Keine Zahl eingegeben"
 
         for dep in Clb_dep_acc.lst_of_dep:
-            if self._department == dep._dep_name:
+            if self._department == dep._dep_name:  # Check if the department matches
                 return dep.remove_money(amount, reason)
 
     def transfer_from(self, amount, tgt_dep, reason):
+        """
+        Transfers money from another department to the Kassenwart's department.
+
+        Args:
+            amount (float): The amount of money to transfer.
+            tgt_dep (str): The target department name.
+            reason (str): The reason for the transfer.
+        """
+
         tgt_dep = tgt_dep.lower()
         try:
-            amount = round(float(amount), 2)
+            amount = round(float(amount), 2)  # Ensure for float and 2 decimal places
         except ValueError:
             return "Error: Keine Zahl eingegeben"
 
@@ -96,6 +139,14 @@ class Kassenwart(User):
                 f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
     def transfer_to(self, amount, tgt_dep, reason):
+        """
+        Transfers money from the Kassenwart's department to another department.
+
+        Args:
+            amount (float): The amount of money to transfer.
+            tgt_dep (str): The target department name.
+            reason (str): The reason for the transfer.
+        """
         tgt_dep = tgt_dep.lower()
         try:
             amount = round(float(amount), 2)
@@ -132,6 +183,10 @@ class Kassenwart(User):
                 f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
 class Referent_Finanzen(User):
+    '''
+    It represents a user with the role of a financial officer, allowing them to view
+    all transactions and transaction history for specific departments.
+    '''
 
     def __init__(self, username, password):
         super().__init__(username, password)
@@ -139,14 +194,32 @@ class Referent_Finanzen(User):
 
     @classmethod
     def view_all_transactions(cls):
+        '''
+        Views all transactions across all departments and
+        retrieves the name of each department and its associated transaction history.
+
+        Returns:
+            list: A list of lists, each containing a department name and its transaction history.
+        '''
         all_trans = []
+        # Loop through each department in the list of departments and append to list
         for dep in Clb_dep_acc.lst_of_dep:
             all_trans.append([dep._dep_name, dep.transactions])
         return all_trans
 
     @classmethod
     def view_transaction_history(cls, department):
+        '''
+        Views the transaction history of a specific department.
+
+        Args:
+            department (str): The department whose transaction history is to be viewed.
+
+        Returns:
+            list or str: A list containing the department name and its transaction history.
+        '''
         department = department.lower()
+        # Loop through each department in the list of departments and append to list
         for dep in Clb_dep_acc.lst_of_dep:
             if department == dep._dep_name:
                 return [dep._dep_name, dep.transactions]
