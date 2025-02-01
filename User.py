@@ -58,7 +58,7 @@ class Kassenwart(User):
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
-    def deposit(self, amount, reason):
+    def deposit(self, amount, reason='-'):
         """
         Deposits money into the Kassenwart's department account.
 
@@ -76,7 +76,7 @@ class Kassenwart(User):
             if self._department == dep._dep_name:
                 return dep.deposit_money(amount, reason)
 
-    def remove(self, amount, reason):
+    def remove(self, amount, reason='-'):
         """
         Removes money from the Kassenwart's department account.
 
@@ -93,7 +93,7 @@ class Kassenwart(User):
             if self._department == dep._dep_name:  # Check if the department matches
                 return dep.remove_money(amount, reason)
 
-    def transfer_from(self, amount, tgt_dep, reason):
+    def transfer_from(self, amount, tgt_dep, reason='-'):
         """
         Transfers money from another department to the Kassenwart's department.
 
@@ -138,7 +138,7 @@ class Kassenwart(User):
         return (f"Es wurde wegen {reason} ein Betrag von {amount}€ vom "
                 f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
-    def transfer_to(self, amount, tgt_dep, reason):
+    def transfer_to(self, amount, tgt_dep, reason='-'):
         """
         Transfers money from the Kassenwart's department to another department.
 

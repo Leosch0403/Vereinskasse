@@ -16,7 +16,10 @@ class Clb_dep_acc:
         if trans_history is None:
             new_trans_history = [[round(balance, 2), 'Initiale Einzahlung']]
         else:
-            new_trans_history = ast.literal_eval(trans_history)  # Turns input into list
+            if isinstance(trans_history, str):
+                new_trans_history = ast.literal_eval(trans_history)  # Turns input into list
+            else:
+                new_trans_history = trans_history
         Clb_dep_acc.lst_of_dep.append(self)
         self._dep_name = department.lower()
         self.balance = round(balance, 2)
