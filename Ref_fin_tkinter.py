@@ -1,4 +1,4 @@
-'''Creates a GUI via tkinter that displays the functionalities of a Kassenwart'''
+'''Creates a GUI via tkinter that displays the functionalities of a finance referent'''
 
 __author__ = "8569130, Schmid, 7996364, Salehi"
 

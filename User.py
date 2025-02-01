@@ -6,12 +6,14 @@ from Vereinskasse import Clb_dep_acc
 
 class User:
     lst_of_users = []
+    user_count = 0
 
     def __init__(self, username, password):
         self._username = username
         self._password = password
         self._role = 'mitglied'
         User.lst_of_users.append(self)
+        User.user_count += 1
 
     def get_info(self):
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
@@ -239,7 +241,7 @@ class Administrator(User):
         # Check whether user already exists
         for user in User.lst_of_users:
             if name in user._username:
-                return f"Der User {name} existiert bereits."
+                return f"Der User {name} existiert bereits und kann daher nicht erstellt werden."
 
         # Create User
         if usertype == 'referent_finanzen':
@@ -247,7 +249,7 @@ class Administrator(User):
             return f"Es wurde ein Finanzreferent erstellt"
         if usertype == 'mitglied':
             new_user = User(name, password)
-            return f"Es wurde ein normaler User erstellt"
+            return f"Es wurde ein Mitglied erstellt"
         if usertype == 'admin':
             new_user = Administrator(name, password)
             return f"Es wurde ein Administrator erstellt"
