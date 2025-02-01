@@ -1,23 +1,39 @@
-__author__ = 'Leonard Schmid'
+'''Defines Classes that are used to simulate users of a Club'''
+
+__author__ = "8569130, Schmid, 7996364, Salehi"
 
 from Vereinskasse import Clb_dep_acc
 
 class User:
+    """
+    It represents an ordinary user  and can perform password changes.
+    """
     lst_of_users = []
+    user_count = 0
 
     def __init__(self, username, password):
         self._username = username
         self._password = password
         self._role = 'mitglied'
         User.lst_of_users.append(self)
+        User.user_count += 1
 
     def get_info(self):
+        """
+        Returns the user's informations/ Attributes
+        """
         return f"Name: {self._username}, Passwort: {self._password}, Rolle: {self._role}"
 
     def change_password(self, old_password, new_password):
+        """
+        Changes the user's password if the old password matches the current one.
+        Args:
+            old_password (str): The current password.
+            new_password (str): The new password to set.
+        """
 
-        if old_password == self._password:
-            self._password = new_password
+        if old_password == self._password:  # Check if the old password is correct
+            self._password = new_password  # Update password
             return (f"Das Passwort von {self._username} wurde "
                     f"von {old_password} zu {new_password} geändert.")
         else:
@@ -25,6 +41,9 @@ class User:
                     f"Daher kommt es zu keiner Änderung.")
 
 class Kassenwart(User):
+    """
+    It represents a user who has the role of a Kassenwart and can perform transactions.
+    """
 
     def __init__(self, username, password, department):
         super().__init__(username, password)
@@ -32,25 +51,142 @@ class Kassenwart(User):
         self._department = department.lower()
 
     def get_info(self):
+        """
+             Returns the Kassenwart's informations
+        """
+
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
-    def deposit(self, amount):
-        amount = float(amount)
+    def deposit(self, amount, reason):
+        """
+        Deposits money into the Kassenwart's department account.
+
+        Args:
+            amount (float): The amount of money to deposit.
+            reason (str): The reason for the deposit.
+        """
+
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
         for dep in Clb_dep_acc.lst_of_dep:
             if self._department == dep._dep_name:
-                return dep.deposit_money(amount)
+                return dep.deposit_money(amount, reason)
 
-    def remove(self, amount):
-        amount = float(amount)
+    def remove(self, amount, reason):
+        """
+        Removes money from the Kassenwart's department account.
+
+        Args:
+            amount (float): The amount of money to remove.
+            reason (str): The reason for the removal.
+        """
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
         for dep in Clb_dep_acc.lst_of_dep:
-            if self._department == dep._dep_name:
-                return dep.remove_money(amount)
+            if self._department == dep._dep_name:  # Check if the department matches
+                return dep.remove_money(amount, reason)
 
-    def transfer(self):
-        pass
+    def transfer_from(self, amount, tgt_dep, reason):
+        """
+        Transfers money from another department to the Kassenwart's department.
+
+        Args:
+            amount (float): The amount of money to transfer.
+            tgt_dep (str): The target department name.
+            reason (str): The reason for the transfer.
+        """
+
+        tgt_dep = tgt_dep.lower()
+        try:
+            amount = round(float(amount), 2)  # Ensure for float and 2 decimal places
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
+        # search for departments
+        tgt_dep_search = False
+        source_dep_search = False
+        for dep in Clb_dep_acc.lst_of_dep:
+            if dep._dep_name == tgt_dep:
+                target_dep = dep
+                tgt_dep_search = True
+            if dep._dep_name == self._department:
+                source_dep = dep
+                source_dep_search = True
+
+        # Confirm existence of departments
+        if not tgt_dep_search:
+            return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
+        if not source_dep_search:
+            return f"Error: Das eigene Konto '{self._department}' existiert nicht."
+
+        # Check whether the amount exceeds the balance or is negative
+        if amount < 0:
+            return f"Error: Die zu abbuchende Summe {amount}€ muss positiv sein."
+        if amount > target_dep.balance:
+            return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {tgt_dep}."
+
+        # Transfer money
+        target_dep.remove_money(amount, reason)
+        source_dep.deposit_money(amount, reason)
+        return (f"Es wurde wegen {reason} ein Betrag von {amount}€ vom "
+                f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
+
+    def transfer_to(self, amount, tgt_dep, reason):
+        """
+        Transfers money from the Kassenwart's department to another department.
+
+        Args:
+            amount (float): The amount of money to transfer.
+            tgt_dep (str): The target department name.
+            reason (str): The reason for the transfer.
+        """
+        tgt_dep = tgt_dep.lower()
+        try:
+            amount = round(float(amount), 2)
+        except ValueError:
+            return "Error: Keine Zahl eingegeben"
+
+        # search for departments
+        tgt_dep_search = False
+        source_dep_search = False
+        for dep in Clb_dep_acc.lst_of_dep:
+            if dep._dep_name == tgt_dep:
+                target_dep = dep
+                tgt_dep_search = True
+            if dep._dep_name == self._department:
+                source_dep = dep
+                source_dep_search = True
+
+        # Confirm existence of departments
+        if not tgt_dep_search:
+            return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
+        if not source_dep_search:
+            return f"Error: Das eigene Konto '{self._department}' existiert nicht."
+
+        # Check whether the amount exceeds the balance or is below 0
+        if amount < 0:
+            return f"Error: Die zu abbuchende Summe {amount}€ muss positiv sein."
+        if amount > source_dep.balance:
+            return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {self._department}."
+
+        # Transfer money
+        source_dep.remove_money(amount, reason)
+        target_dep.deposit_money(amount, reason)
+        return (f"Es wurde wegen {reason} ein Betrag von {amount}€ vom "
+                f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
 class Referent_Finanzen(User):
+    '''
+    It represents a user with the role of a financial officer, allowing them to view
+    all transactions and transaction history for specific departments.
+    '''
 
     def __init__(self, username, password):
         super().__init__(username, password)
@@ -58,17 +194,35 @@ class Referent_Finanzen(User):
 
     @classmethod
     def view_all_transactions(cls):
+        '''
+        Views all transactions across all departments and
+        retrieves the name of each department and its associated transaction history.
+
+        Returns:
+            list: A list of lists, each containing a department name and its transaction history.
+        '''
         all_trans = []
+        # Loop through each department in the list of departments and append to list
         for dep in Clb_dep_acc.lst_of_dep:
             all_trans.append([dep._dep_name, dep.transactions])
         return all_trans
 
     @classmethod
     def view_transaction_history(cls, department):
+        '''
+        Views the transaction history of a specific department.
+
+        Args:
+            department (str): The department whose transaction history is to be viewed.
+
+        Returns:
+            list or str: A list containing the department name and its transaction history.
+        '''
         department = department.lower()
+        # Loop through each department in the list of departments and append to list
         for dep in Clb_dep_acc.lst_of_dep:
             if department == dep._dep_name:
-                return dep.transactions
+                return [dep._dep_name, dep.transactions]
         return f'Die Abteilung {department} existiert nicht und kann daher nicht eingesehen werden.'
 
 class Administrator(User):
@@ -160,7 +314,7 @@ class Administrator(User):
         # Check whether user already exists
         for user in User.lst_of_users:
             if name in user._username:
-                return f"Der User {name} existiert bereits."
+                return f"Der User {name} existiert bereits und kann daher nicht erstellt werden."
 
         # Create User
         if usertype == 'referent_finanzen':
@@ -168,7 +322,7 @@ class Administrator(User):
             return f"Es wurde ein Finanzreferent erstellt"
         if usertype == 'mitglied':
             new_user = User(name, password)
-            return f"Es wurde ein normaler User erstellt"
+            return f"Es wurde ein Mitglied erstellt"
         if usertype == 'admin':
             new_user = Administrator(name, password)
             return f"Es wurde ein Administrator erstellt"
@@ -253,10 +407,3 @@ if __name__ == '__main__':
     Administrator.get_departments()
     print(User.lst_of_users)
     Administrator.get_users()
-'''    print(Clb_dep_acc.lst_of_dep[0]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[2]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart._department._dep_name)
-
-    (f"Es wurde ein Kassenwart {name} mit der "
-     f"zugehörigen Abteilung {department} erstellt")'''

@@ -25,7 +25,7 @@ def logout():
     Exits the program after triggering the authentication script.
     """
     messagebox.showinfo('Logout', f"Logout erfolgreich")
-    subprocess.Popen([sys.executable, 'Authentification.py'])
+    subprocess.Popen([sys.executable, 'Login.py'])
     sys.exit()
 
 def backup_csv():
@@ -197,7 +197,7 @@ def del_usr():
     messagebox.showinfo('User erstellen',f"{user}")
 
 
-# Create left frame that displays the created users and departments
+# Create left frame that displays the buttons
 button_frame = tk.Frame(root,
                         width=400
                         )
@@ -251,7 +251,7 @@ btn_lst_usr = tk.Button(button_frame,
                         command=lst_usr)
 btn_lst_usr.pack(fill='x')
 
-# Create CSV file
+# Create CSV Backup
 btn_create_csv = tk.Button(button_frame,
                         text="CSV Backup der User und Abteilungen erstellen",
                         command=backup_csv)

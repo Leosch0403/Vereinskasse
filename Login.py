@@ -19,6 +19,9 @@ root.geometry('400x300')
 root.configure(background='white')
 
 def exit_program():
+    """
+    Destroys root
+    """
     root.destroy()
 
 def entry_field_auth(fst_label, snd_label):
@@ -28,10 +31,6 @@ def entry_field_auth(fst_label, snd_label):
     Parameters:
         fst_label (str): Label text for the username field.
         snd_label (str): Label text for the password field.
-        function (function): The function to execute when the button is clicked.
-
-    Returns:
-        tuple: Returns references to the username and password entry fields.
     """
 
     # Label for username input
@@ -59,7 +58,6 @@ def entry_field_auth(fst_label, snd_label):
     end_button = tk.Button(root, font='Arial', text='Programm beenden',
                              command=exit_program)
     end_button.pack()
-
 
 def login(input_name, input_password):
     """
@@ -96,9 +94,11 @@ def login(input_name, input_password):
 
         # Open a new script according to userrole
         if user_role == 'admin':
-            subprocess.Popen([sys.executable, 'Administrator.py'])
+            subprocess.Popen([sys.executable, 'Administrator_tkinter.py'])
         elif user_role == 'kassenwart':
-            pass
+            subprocess.Popen([sys.executable, 'kassenwart_tkinter.py'])
+        elif user_role == 'referent_finanzen':
+            subprocess.Popen([sys.executable, 'Ref_fin_tkinter.py'])
         root.destroy()  # close the current application
 
     # Handle incorrect credentials
@@ -108,7 +108,6 @@ def login(input_name, input_password):
         messagebox.showerror('Error', f"Der Username '{input_name}' existiert nicht")
     else:
         messagebox.showerror('Error', "Falsches Passwort")
-
 
 # Create entry fields and assign the login function to the button
 entry_field_auth('Username:', 'Passwort:')
