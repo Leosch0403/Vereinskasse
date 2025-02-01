@@ -1,3 +1,4 @@
 department;balance;transaction_history
-golf;22.0;[44.0,-22.0]
-schwimmen;33.46;[33.46]
+golf;54.12;[[44.0, 'Initiale Einzahlung'], [-22.0, 'Golfschläger'], [32.12, 'Spende']]
+schwimmen;33.46;[[33.46, 'Initiale Einzahlung']]
+theater;100.0;[[100.0, 'Initiale Einzahlung']]

@@ -37,7 +37,7 @@ class Kassenwart(User):
         return (f"Name: {self._username}, Passwort: {self._password}, "
                 f"Rolle: {self._role}, Abteilung: {self._department}")
 
-    def deposit(self, amount):
+    def deposit(self, amount, reason):
         try:
             amount = round(float(amount), 2)
         except ValueError:
@@ -45,9 +45,9 @@ class Kassenwart(User):
 
         for dep in Clb_dep_acc.lst_of_dep:
             if self._department == dep._dep_name:
-                return dep.deposit_money(amount)
+                return dep.deposit_money(amount, reason)
 
-    def remove(self, amount):
+    def remove(self, amount, reason):
         try:
             amount = round(float(amount), 2)
         except ValueError:
@@ -55,9 +55,9 @@ class Kassenwart(User):
 
         for dep in Clb_dep_acc.lst_of_dep:
             if self._department == dep._dep_name:
-                return dep.remove_money(amount)
+                return dep.remove_money(amount, reason)
 
-    def transfer_from(self, amount, tgt_dep):
+    def transfer_from(self, amount, tgt_dep, reason):
         tgt_dep = tgt_dep.lower()
         try:
             amount = round(float(amount), 2)
@@ -65,16 +65,20 @@ class Kassenwart(User):
             return "Error: Keine Zahl eingegeben"
 
         # search for departments
+        tgt_dep_search = False
+        source_dep_search = False
         for dep in Clb_dep_acc.lst_of_dep:
             if dep._dep_name == tgt_dep:
                 target_dep = dep
+                tgt_dep_search = True
             if dep._dep_name == self._department:
                 source_dep = dep
+                source_dep_search = True
 
         # Confirm existence of departments
-        if not target_dep:
+        if not tgt_dep_search:
             return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
-        if not source_dep:
+        if not source_dep_search:
             return f"Error: Das eigene Konto '{self._department}' existiert nicht."
 
         # Check whether the amount exceeds the balance or is negative
@@ -84,11 +88,12 @@ class Kassenwart(User):
             return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {tgt_dep}."
 
         # Transfer money
-        target_dep.remove_money(amount)
-        source_dep.deposit_money(amount)
-        return f"Es wurde {amount} vom {tgt_dep} Konto zum {self._department} Konto transferiert."
+        target_dep.remove_money(amount, reason)
+        source_dep.deposit_money(amount, reason)
+        return (f"Es wurde wegen {reason} ein Betrag von {amount}€ vom "
+                f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
-    def transfer_to(self, amount, tgt_dep):
+    def transfer_to(self, amount, tgt_dep, reason):
         tgt_dep = tgt_dep.lower()
         try:
             amount = round(float(amount), 2)
@@ -96,16 +101,20 @@ class Kassenwart(User):
             return "Error: Keine Zahl eingegeben"
 
         # search for departments
+        tgt_dep_search = False
+        source_dep_search = False
         for dep in Clb_dep_acc.lst_of_dep:
             if dep._dep_name == tgt_dep:
                 target_dep = dep
+                tgt_dep_search = True
             if dep._dep_name == self._department:
                 source_dep = dep
+                source_dep_search = True
 
         # Confirm existence of departments
-        if not target_dep:
+        if not tgt_dep_search:
             return f"Error: Das Zielkonto '{tgt_dep}' existiert nicht."
-        if not source_dep:
+        if not source_dep_search:
             return f"Error: Das eigene Konto '{self._department}' existiert nicht."
 
         # Check whether the amount exceeds the balance or is below 0
@@ -115,9 +124,10 @@ class Kassenwart(User):
             return f"Error: Die zu abbuchende Summe {amount}€ überschreitet den Kontostand von {self._department}."
 
         # Transfer money
-        source_dep.remove_money(amount)
-        target_dep.deposit_money(amount)
-        return f"Es wurde {amount} vom {tgt_dep} Konto zum {self._department} Konto transferiert."
+        source_dep.remove_money(amount, reason)
+        target_dep.deposit_money(amount, reason)
+        return (f"Es wurde wegen {reason} ein Betrag von {amount}€ vom "
+                f"{tgt_dep} Konto zum {self._department} Konto transferiert.")
 
 class Referent_Finanzen(User):
 
@@ -322,10 +332,3 @@ if __name__ == '__main__':
     Administrator.get_departments()
     print(User.lst_of_users)
     Administrator.get_users()
-'''    print(Clb_dep_acc.lst_of_dep[0]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[2]._ksnwart.get_info())
-    print(Clb_dep_acc.lst_of_dep[1]._ksnwart._department._dep_name)
-
-    (f"Es wurde ein Kassenwart {name} mit der "
-     f"zugehörigen Abteilung {department} erstellt")'''

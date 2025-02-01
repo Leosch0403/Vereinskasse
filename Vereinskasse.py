@@ -9,18 +9,20 @@ class Clb_dep_acc:
 
     def __init__(self, department : str, balance : int | float, trans_history=None):
         if trans_history is None:
-            trans_history = [round(balance, 2)]
+            new_trans_history = [[round(balance, 2), 'Initiale Einzahlung']]
+        else:
+            new_trans_history = ast.literal_eval(trans_history)  # Turns input into list
         Clb_dep_acc.lst_of_dep.append(self)
         self._dep_name = department.lower()
         self.balance = round(balance, 2)
-        self.transactions = ast.literal_eval(trans_history)  # Turns input into list
+        self.transactions = new_trans_history  # Turns input into list
 
 
     def get_information(self):
         return (f"Der Kontostand der Abteilung {self._dep_name} ist {self.balance}€, "
                 f"die Transaktionshistorie ist {self.transactions}.")
 
-    def deposit_money(self, amount : int | float):
+    def deposit_money(self, amount : int | float, reason):
         # Check whether input data is convertable to float
         try:
             amount = float(amount)
@@ -31,11 +33,11 @@ class Clb_dep_acc:
         if amount < 0:
             return f"Der Betrag muss positiv sein."
         self.balance += amount
-        self.transactions.append(amount)
-        return (f"{amount}€ wurde in das Konto der {self._dep_name} Abteilung eingezahlt. "
-                f"Neuer Kontostand: {self.balance}€")
+        self.transactions.append([amount, reason])
+        return (f"Aufgrund von {reason} wurde {amount}€ in das Konto der {self._dep_name} "
+                f"Abteilung eingezahlt. Neuer Kontostand: {self.balance}€")
 
-    def remove_money(self, amount : int | float):
+    def remove_money(self, amount : int | float, reason):
         # Check whether input data is convertable to float
         try:
             amount = float(amount)
@@ -47,7 +49,7 @@ class Clb_dep_acc:
             return "Die eingegebene Zahl muss positiv sein."
         if amount > self.balance:
             return f"Der Betrag überschreitet den aktuellen Kontostand von {self.balance}."
-        self.transactions.append(-amount)
+        self.transactions.append([-amount, reason])
         self.balance -= amount
         return (f"{amount}€ wurde von dem Konto der {self._dep_name} Abteilung abgebucht. "
               f"Neuer Kontostand: {self.balance}€")

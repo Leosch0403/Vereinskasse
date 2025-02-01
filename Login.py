@@ -60,7 +60,6 @@ def entry_field_auth(fst_label, snd_label):
                              command=exit_program)
     end_button.pack()
 
-
 def login(input_name, input_password):
     """
     Handles user authentication by checking the entered username and password
@@ -96,9 +95,9 @@ def login(input_name, input_password):
 
         # Open a new script according to userrole
         if user_role == 'admin':
-            subprocess.Popen([sys.executable, 'Administrator.py'])
+            subprocess.Popen([sys.executable, 'Administrator_tkinter.py'])
         elif user_role == 'kassenwart':
-            pass
+            subprocess.Popen([sys.executable, 'kassenwart_tkinter.py'])
         root.destroy()  # close the current application
 
     # Handle incorrect credentials
@@ -108,7 +107,6 @@ def login(input_name, input_password):
         messagebox.showerror('Error', f"Der Username '{input_name}' existiert nicht")
     else:
         messagebox.showerror('Error', "Falsches Passwort")
-
 
 # Create entry fields and assign the login function to the button
 entry_field_auth('Username:', 'Passwort:')
